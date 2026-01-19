@@ -30,7 +30,7 @@ const App: React.FC = () => {
     const renderView = () => {
         switch (currentView) {
             case 'list':
-                return <StructureListView />;
+                return <StructureListView setCurrentView={handleSetCurrentView} />;
             case 'detail':
                 return <StructureDetailView structureId={currentStructureId} />;
             case 'settings':
@@ -38,7 +38,7 @@ const App: React.FC = () => {
             case 'analysis':
                 return <PortfolioAnalysis />;
             default:
-                return <StructureListView />;
+                return <StructureListView setCurrentView={handleSetCurrentView} />;
         }
     }
 

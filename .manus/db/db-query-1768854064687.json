@@ -1,0 +1,40 @@
+{
+  "query": "SHOW TABLES;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3oHtB2ru8zC82QY.root --database K4zM37evGzfMf8m3Ckfnqp --execute SHOW TABLES;",
+  "rows": [
+    {
+      "Tables_in_K4zM37evGzfMf8m3Ckfnqp": "__drizzle_migrations"
+    },
+    {
+      "Tables_in_K4zM37evGzfMf8m3Ckfnqp": "analysis_history"
+    },
+    {
+      "Tables_in_K4zM37evGzfMf8m3Ckfnqp": "portfolio_strategies"
+    },
+    {
+      "Tables_in_K4zM37evGzfMf8m3Ckfnqp": "portfolios"
+    },
+    {
+      "Tables_in_K4zM37evGzfMf8m3Ckfnqp": "risk_alerts"
+    },
+    {
+      "Tables_in_K4zM37evGzfMf8m3Ckfnqp": "strategies"
+    },
+    {
+      "Tables_in_K4zM37evGzfMf8m3Ckfnqp": "structure_shares"
+    },
+    {
+      "Tables_in_K4zM37evGzfMf8m3Ckfnqp": "structures"
+    },
+    {
+      "Tables_in_K4zM37evGzfMf8m3Ckfnqp": "uploaded_files"
+    },
+    {
+      "Tables_in_K4zM37evGzfMf8m3Ckfnqp": "users"
+    }
+  ],
+  "messages": [],
+  "stdout": "Tables_in_K4zM37evGzfMf8m3Ckfnqp\n__drizzle_migrations\nanalysis_history\nportfolio_strategies\nportfolios\nrisk_alerts\nstrategies\nstructure_shares\nstructures\nuploaded_files\nusers\n",
+  "stderr": "",
+  "execution_time_ms": 111
+}

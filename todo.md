@@ -133,3 +133,15 @@
 - [x] Correggere logica logout (usare metodo logout di useAuth)
 - [x] Testare che il pulsante Logout funzioni correttamente
 - [x] Verificare redirect dopo logout (reindirizza a pagina login)
+
+## Verifica Persistenza Database (IN PROGRESS)
+- [ ] Verificare schema database structures
+- [ ] Testare creazione struttura e salvataggio nel database
+- [ ] Verificare che i dati persistano dopo reload
+- [ ] Testare query list per caricare strutture salvate
+
+## Bug Pulsante Crea Nuova Non Funziona (COMPLETATO)
+- [x] Verificare come viene passata setCurrentView a StructureListView
+- [x] Passare handleSetCurrentView come prop da App.tsx
+- [x] Correggere chiamata nel componente (rimosso placeholder)
+- [x] Testare che il pulsante apra il form di creazione

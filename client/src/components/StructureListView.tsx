@@ -77,7 +77,11 @@ const calculateUnrealizedPnlForStructure = (structure: Structure, marketData: Ma
 };
 
 
-const StructureListView: React.FC = () => {
+interface StructureListViewProps {
+    setCurrentView: (view: 'list' | 'detail' | 'settings' | 'analysis', structureId?: number | 'new' | null) => void;
+}
+
+const StructureListView: React.FC<StructureListViewProps> = ({ setCurrentView }) => {
     const { structures, deleteStructures, isLoading } = useStructures();
     const { settings } = useSettingsStore();
     
@@ -102,11 +106,7 @@ const StructureListView: React.FC = () => {
         }
     };
     
-    // Funzione per navigare (sostituisce setCurrentView)
-    const setCurrentView = (view: string, structureId?: number | 'new' | null) => {
-        // TODO: Implementare navigazione con React Router se necessario
-        console.log('Navigate to:', view, structureId);
-    };
+    // setCurrentView ora viene passata come prop da App.tsx
     const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
     const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
     const [isBulkEditMode, setIsBulkEditMode] = useState(false);
