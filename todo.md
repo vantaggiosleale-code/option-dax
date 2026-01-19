@@ -120,3 +120,16 @@
 - [x] Correggere useStructures: aggiungere parametro { status: 'all' } alla query tRPC
 - [x] Testare caricamento app dopo fix
 - [x] Verificare che le strutture vengano caricate correttamente
+
+## Debug Caricamento Bloccato (URGENT)
+- [ ] Controllare log server per errori tRPC
+- [ ] Controllare console browser per errori JavaScript
+- [ ] Verificare se la query tRPC sta effettivamente fallendo
+- [ ] Aggiungere logging dettagliato in useStructures
+- [ ] Testare con browser diverso o incognito
+
+## Bug Pulsante Logout Non Funziona (COMPLETATO)
+- [x] Verificare funzione handleLogout in App.tsx
+- [x] Correggere logica logout (usare metodo logout di useAuth)
+- [x] Testare che il pulsante Logout funzioni correttamente
+- [x] Verificare redirect dopo logout (reindirizza a pagina login)

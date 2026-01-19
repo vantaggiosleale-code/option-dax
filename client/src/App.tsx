@@ -20,12 +20,11 @@ const App: React.FC = () => {
             setCurrentStructureId(structureId);
         }
     };
-    const { user, loading, isAuthenticated } = useAuth();
-    const logoutMutation = trpc.auth.logout.useMutation();
+    const { user, loading, isAuthenticated, logout } = useAuth();
 
     const handleLogout = async () => {
-        await logoutMutation.mutateAsync();
-        window.location.reload();
+        await logout();
+        window.location.href = getLoginUrl();
     };
 
     const renderView = () => {
