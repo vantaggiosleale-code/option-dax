@@ -145,3 +145,10 @@
 - [x] Passare handleSetCurrentView come prop da App.tsx
 - [x] Correggere chiamata nel componente (rimosso placeholder)
 - [x] Testare che il pulsante apra il form di creazione
+
+## Bug Pulsante Aggiornamento Prezzo DAX Non Funziona (COMPLETATO)
+- [x] Verificare funzione refreshDaxSpot in StructureListView
+- [x] Implementare router marketData.getDaxPrice nel backend
+- [x] Implementare chiamata API Yahoo Finance per prezzo live (^GDAXI)
+- [x] Correggere chiamata frontend usando fetch diretto
+- [x] Testare che il pulsante aggiorni il prezzo correttamente (21885.79 → 24959.06)

@@ -7,6 +7,7 @@ import { PlusIcon, ArchiveIcon, ScanIcon, PortfolioIcon, UploadIcon, EditIcon, T
 import ImageAnalysisModal from './ImageAnalysisModal';
 import HistoricalImportModal from './HistoricalImportModal';
 import useSettingsStore from '../store/settingsStore';
+import { trpc } from '../lib/trpc';
 
 
 // This function now calculates all Greeks in their "points" or standard format.
@@ -92,15 +93,24 @@ const StructureListView: React.FC<StructureListViewProps> = ({ setCurrentView })
     });
     const [isLoadingSpot, setIsLoadingSpot] = useState(false);
     
-    // Funzione per ricaricare DAX spot (da implementare con API reale)
+    // Funzione per ricaricare DAX spot da Yahoo Finance
     const refreshDaxSpot = async () => {
         setIsLoadingSpot(true);
         try {
-            // TODO: Implementare chiamata API per prezzo DAX reale
-            // Per ora manteniamo il valore statico
-            console.log('Refresh DAX spot non ancora implementato');
+            const response = await fetch('/api/trpc/marketData.getDaxPrice', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({})
+            });
+            const data = await response.json();
+            const price = data.result.data.json.price;
+            console.log('Prezzo DAX aggiornato:', price);
+            setMarketData(prev => ({
+                ...prev,
+                daxSpot: price
+            }));
         } catch (e) {
-            console.error(e);
+            console.error('Errore aggiornamento prezzo DAX:', e);
         } finally {
             setIsLoadingSpot(false);
         }
