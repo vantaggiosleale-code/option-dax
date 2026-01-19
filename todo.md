@@ -1,0 +1,76 @@
+# Option DAX - TODO List
+
+## Database & Schema
+- [x] Creare tabella strategies per salvare strategie di trading
+- [x] Creare tabella portfolios per gestire portafogli utente
+- [x] Creare tabella analysis_history per storico analisi
+- [x] Creare tabella risk_alerts per notifiche di rischio
+- [x] Creare tabella uploaded_files per documenti e report
+- [x] Eseguire migration database con pnpm db:push
+
+## Backend API (tRPC)
+- [x] Implementare router strategies con CRUD operations
+- [x] Implementare router portfolios con CRUD operations
+- [x] Implementare router analysis con calcoli Black-Scholes
+- [x] Implementare router chat per integrazione Gemini API
+- [x] Implementare router files per upload/download documenti
+- [x] Implementare router alerts per gestione notifiche rischio
+- [x] Configurare protectedProcedure per tutte le operazioni sensibili
+
+## Frontend - Integrazione Componenti Esistenti
+- [x] Copiare e adattare componenti React dall'app originale
+- [x] Integrare OptionCalculator per calcoli Black-Scholes
+- [x] Integrare PayoffChart per visualizzazioni payoff
+- [x] Integrare RiskAnalysis per analisi di rischio
+- [x] Integrare ChatBot per interazione con Gemini AI
+
+## Frontend - Nuove Funzionalità
+- [x] Creare DashboardLayout per navigazione principale
+- [x] Creare pagina Strategies per gestione strategie
+- [x] Creare pagina Portfolios per gestione portafogli
+- [x] Creare pagina Analysis per analisi in tempo reale
+- [x] Creare pagina History per storico operazioni
+- [ ] Implementare upload file con drag & drop
+- [ ] Implementare visualizzazioni Recharts per grafici avanzati
+
+## Gestione Stato & Real-time
+- [ ] Configurare Zustand store per dati trading
+- [ ] Implementare store per strategie attive
+- [ ] Implementare store per prezzi in tempo reale
+- [ ] Implementare store per alert e notifiche
+
+## Integrazione API Esterne
+- [x] Configurare Gemini API Key come secret
+- [x] Implementare chatbot AI con streaming responses
+- [x] Testare integrazione Gemini con domande trading
+
+## Notifiche & Alert
+- [ ] Implementare notifyOwner per alert critici di rischio
+- [ ] Configurare threshold per alert automatici
+- [ ] Creare sistema di notifiche in-app per utenti
+
+## Storage & File Management
+- [ ] Configurare S3 per upload report PDF
+- [ ] Implementare upload screenshot grafici
+- [ ] Implementare download documenti strategia
+- [ ] Gestire metadata file nel database
+
+## Styling & UX
+- [x] Scegliere palette colori professionale per trading app
+- [x] Implementare tema dark/light con ThemeProvider
+- [x] Configurare font professionale (Inter o Roboto)
+- [ ] Aggiungere animazioni per transizioni smooth
+- [ ] Implementare responsive design per mobile
+
+## Testing & Quality
+- [x] Scrivere vitest per router strategies
+- [x] Scrivere vitest per router portfolios
+- [x] Scrivere vitest per calcoli Black-Scholes
+- [x] Testare upload file e storage S3
+- [x] Testare integrazione Gemini API
+
+## Deployment
+- [ ] Creare checkpoint finale per produzione
+- [ ] Verificare tutte le variabili d'ambiente
+- [ ] Testare app in preview mode
+- [ ] Documentare funzionalità per l'utente

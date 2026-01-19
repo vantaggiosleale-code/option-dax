@@ -1,6 +1,20 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { 
+  InsertUser, 
+  users,
+  strategies,
+  InsertStrategy,
+  portfolios,
+  InsertPortfolio,
+  portfolioStrategies,
+  analysisHistory,
+  InsertAnalysisHistory,
+  riskAlerts,
+  InsertRiskAlert,
+  uploadedFiles,
+  InsertUploadedFile
+} from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +103,156 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// Strategies queries
+export async function createStrategy(strategy: InsertStrategy) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.insert(strategies).values(strategy);
+  return result;
+}
+
+export async function getUserStrategies(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select().from(strategies).where(eq(strategies.userId, userId));
+}
+
+export async function getStrategyById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(strategies).where(eq(strategies.id, id)).limit(1);
+  return result[0];
+}
+
+export async function updateStrategy(id: number, data: Partial<InsertStrategy>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return await db.update(strategies).set(data).where(eq(strategies.id, id));
+}
+
+export async function deleteStrategy(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return await db.delete(strategies).where(eq(strategies.id, id));
+}
+
+// Portfolios queries
+export async function createPortfolio(portfolio: InsertPortfolio) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.insert(portfolios).values(portfolio);
+  return result;
+}
+
+export async function getUserPortfolios(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select().from(portfolios).where(eq(portfolios.userId, userId));
+}
+
+export async function getPortfolioById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(portfolios).where(eq(portfolios.id, id)).limit(1);
+  return result[0];
+}
+
+export async function updatePortfolio(id: number, data: Partial<InsertPortfolio>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return await db.update(portfolios).set(data).where(eq(portfolios.id, id));
+}
+
+export async function deletePortfolio(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return await db.delete(portfolios).where(eq(portfolios.id, id));
+}
+
+// Portfolio-Strategy relationships
+export async function addStrategyToPortfolio(portfolioId: number, strategyId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return await db.insert(portfolioStrategies).values({ portfolioId, strategyId });
+}
+
+export async function removeStrategyFromPortfolio(portfolioId: number, strategyId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return await db.delete(portfolioStrategies)
+    .where(eq(portfolioStrategies.portfolioId, portfolioId));
+}
+
+export async function getPortfolioStrategies(portfolioId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select()
+    .from(portfolioStrategies)
+    .innerJoin(strategies, eq(portfolioStrategies.strategyId, strategies.id))
+    .where(eq(portfolioStrategies.portfolioId, portfolioId));
+}
+
+// Analysis history queries
+export async function saveAnalysis(analysis: InsertAnalysisHistory) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return await db.insert(analysisHistory).values(analysis);
+}
+
+export async function getUserAnalysisHistory(userId: number, limit = 50) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select().from(analysisHistory)
+    .where(eq(analysisHistory.userId, userId))
+    .orderBy(analysisHistory.createdAt)
+    .limit(limit);
+}
+
+// Risk alerts queries
+export async function createRiskAlert(alert: InsertRiskAlert) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return await db.insert(riskAlerts).values(alert);
+}
+
+export async function getUserAlerts(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select().from(riskAlerts)
+    .where(eq(riskAlerts.userId, userId))
+    .orderBy(riskAlerts.createdAt);
+}
+
+export async function markAlertAsRead(alertId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return await db.update(riskAlerts).set({ isRead: 1 }).where(eq(riskAlerts.id, alertId));
+}
+
+// Uploaded files queries
+export async function saveUploadedFile(file: InsertUploadedFile) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return await db.insert(uploadedFiles).values(file);
+}
+
+export async function getUserFiles(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select().from(uploadedFiles)
+    .where(eq(uploadedFiles.userId, userId))
+    .orderBy(uploadedFiles.createdAt);
+}
+
+export async function getFileById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(uploadedFiles).where(eq(uploadedFiles.id, id)).limit(1);
+  return result[0];
+}
+
+export async function deleteFile(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return await db.delete(uploadedFiles).where(eq(uploadedFiles.id, id));
+}
