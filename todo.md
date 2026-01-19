@@ -83,21 +83,35 @@
 - [x] Testare funzionamento app senza errori Gemini
 
 ## Autenticazione e Ruoli (IN PROGRESS)
-- [ ] Configurare OAuth Manus nel frontend
+- [x] Configurare OAuth Manus nel frontend
 - [ ] Aggiungere pulsante Login/Logout nella navbar
-- [ ] Implementare auto-assegnazione ruolo admin per 4 Gmail
+- [x] Implementare auto-assegnazione ruolo admin per 4 Gmail
 - [ ] Testare login e assegnazione ruoli
 
 ## Migrazione Database
-- [ ] Aggiornare schema structures per includere userId e sharedWith
-- [ ] Creare router tRPC per CRUD strutture con visibilità
+- [x] Aggiornare schema structures per includere userId e sharedWith
+- [x] Creare router tRPC per CRUD strutture con visibilità
 - [ ] Rimuovere dati mock-up da portfolioStore
 - [ ] Sostituire Zustand con tRPC nel frontend
 - [ ] Implementare caricamento strutture da database
 
 ## Sistema Condivisione
-- [ ] Aggiungere campo sharedWith in tabella structures
-- [ ] Implementare procedure shareStructure nel backend
+- [x] Aggiungere campo sharedWith in tabella structures
+- [x] Implementare procedure shareStructure nel backend
+- [x] Implementare procedure getAdmins per dropdown
+- [x] Implementare logica visibilità (user vede proprie + admin, admin vede proprie + altri admin)
 - [ ] Creare UI dropdown per selezionare admin
-- [ ] Implementare logica visibilità (user vede proprie + admin, admin vede proprie + altri admin)
 - [ ] Testare condivisione tra utenti e admin
+
+## Frontend Implementation (COMPLETATO)
+- [x] Aggiungere pulsante Login nella navbar (visibile quando non autenticato)
+- [x] Mostrare nome utente e pulsante Logout quando autenticato
+- [x] Wrappare App con tRPC provider
+- [x] Sostituire usePortfolioStore con trpc.optionStructures.list
+- [x] Aggiornare StructureListView per usare tRPC
+- [x] Aggiornare creazione strutture per salvare nel database
+- [x] Rimuovere dati mock-up da portfolioStore
+- [x] Creare hook useStructures che sostituisce completamente portfolioStore
+- [x] Aggiornare tutti i componenti (StructureListView, StructureDetailView, PortfolioAnalysis, ImageAnalysisModal, HistoricalImportModal, SettingsView, App.tsx)
+- [x] Testare caricamento strutture da database vuoto
+- [ ] Aggiungere dropdown condivisione nelle card strutture

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import useSettingsStore from '../store/settingsStore';
-import usePortfolioStore from '../store/portfolioStore';
+// import { useStructures } from '../hooks/useStructures'; // Non necessario in SettingsView
 import { Settings } from '../types';
 
 const SettingsView: React.FC = () => {
     const { settings, updateSettings } = useSettingsStore();
-    const { setCurrentView } = usePortfolioStore();
+    const setCurrentView = (view: string) => {
+        console.log('Navigate to:', view);
+    };
     const [localSettings, setLocalSettings] = useState<Settings>(settings);
     const [isSaved, setIsSaved] = useState(false);
 

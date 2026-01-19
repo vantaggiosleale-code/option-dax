@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { OptionLeg, MarketData, Structure, CalculatedGreeks } from '../types';
 import { BlackScholes, getTimeToExpiry, calculateImpliedVolatility } from '../services/blackScholes';
-import usePortfolioStore from '../store/portfolioStore';
+import { useStructures } from '../hooks/useStructures';
 import useSettingsStore from '../store/settingsStore';
 import PayoffChart from './PayoffChart';
 import { PlusIcon, TrashIcon, CalculatorIcon, CloudDownloadIcon } from './icons';
@@ -28,7 +28,29 @@ interface StructureDetailViewProps {
 }
 
 const StructureDetailView: React.FC<StructureDetailViewProps> = ({ structureId }) => {
-    const { structures, marketData, setMarketData, addStructure, updateStructure, deleteStructure, closeStructure, reopenStructure, setCurrentView, refreshDaxSpot, isLoadingSpot } = usePortfolioStore();
+    const { structures, addStructure, updateStructure, deleteStructure, closeStructure, reopenStructure } = useStructures();
+    
+    // Market data gestito localmente
+    const [marketData, setMarketData] = useState<MarketData>({
+        daxSpot: 21885.79,
+        riskFreeRate: 2.61,
+    });
+    const [isLoadingSpot, setIsLoadingSpot] = useState(false);
+    
+    const refreshDaxSpot = async () => {
+        setIsLoadingSpot(true);
+        try {
+            console.log('Refresh DAX spot non ancora implementato');
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setIsLoadingSpot(false);
+        }
+    };
+    
+    const setCurrentView = (view: string, structureId?: number | 'new' | null) => {
+        console.log('Navigate to:', view, structureId);
+    };
     const { settings } = useSettingsStore();
     const [localStructure, setLocalStructure] = useState<Omit<Structure, 'id' | 'status'> | Structure | null>(null);
     const [isReadOnly, setIsReadOnly] = useState(false);
@@ -180,9 +202,9 @@ const StructureDetailView: React.FC<StructureDetailViewProps> = ({ structureId }
         setCurrentView('list');
     };
     
-    const handleClose = () => {
+    const handleClose = async () => {
         if (!localStructure || !('id' in localStructure) || isReadOnly) return;
-        closeStructure(localStructure.id);
+        await closeStructure(localStructure.id, marketData.daxSpot, marketData.riskFreeRate);
         setCurrentView('list');
     };
 

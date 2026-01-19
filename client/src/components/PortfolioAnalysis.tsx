@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell, ReferenceLine, ComposedChart
 } from 'recharts';
-import usePortfolioStore from '../store/portfolioStore';
+import { useStructures } from '../hooks/useStructures';
 import useSettingsStore from '../store/settingsStore';
 import { TrendingUpIcon, TrendingDownIcon, ScaleIcon, CheckBadgeIcon, PlusCircleIcon, MinusCircleIcon } from './icons';
 
@@ -65,7 +65,10 @@ const MetricCard = ({ icon, title, value, colorClass = 'text-white' }: { icon: R
 );
 
 const PortfolioAnalysis: React.FC = () => {
-    const { structures, setCurrentView } = usePortfolioStore();
+    const { structures } = useStructures();
+    const setCurrentView = (view: string) => {
+        console.log('Navigate to:', view);
+    };
     const closedStructures = structures.filter(s => s.status === 'Closed');
     const { initialCapital } = useSettingsStore(state => state.settings);
 

@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { HistoricalImportData } from '../types';
 // import { analyzeHistoryImage } from '../services/geminiService'; // TODO: Implement with tRPC
-import usePortfolioStore from '../store/portfolioStore';
+import { useStructures } from '../hooks/useStructures';
 
 interface HistoricalImportModalProps {
     isOpen: boolean;
@@ -32,7 +32,8 @@ const HistoricalImportModal: React.FC<HistoricalImportModalProps> = ({ isOpen, o
     const [error, setError] = useState<string | null>(null);
     const [progress, setProgress] = useState({ current: 0, total: 0 });
     const [importedData, setImportedData] = useState<HistoricalImportData[]>([]);
-    const { addHistoricalStructures } = usePortfolioStore();
+    const { addStructure } = useStructures();
+    // TODO: Implementare addHistoricalStructures con batch import
 
     const resetState = useCallback(() => {
         setFiles([]);
@@ -91,7 +92,8 @@ const HistoricalImportModal: React.FC<HistoricalImportModalProps> = ({ isOpen, o
 
     const handleConfirmImport = () => {
         if (importedData.length > 0) {
-            addHistoricalStructures(importedData);
+            // TODO: Implementare batch import con tRPC
+            console.log('Import storico non ancora implementato:', importedData);
         }
         handleClose();
     };

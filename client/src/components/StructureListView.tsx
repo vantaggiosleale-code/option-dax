@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo, useCallback } from 'react';
-import usePortfolioStore from '../store/portfolioStore';
+import { useStructures } from '../hooks/useStructures';
 import { Structure, MarketData, CalculatedGreeks, Settings } from '../types';
 import { BlackScholes, getTimeToExpiry } from '../services/blackScholes';
 import { PlusIcon, ArchiveIcon, ScanIcon, PortfolioIcon, UploadIcon, EditIcon, TrashIcon, CloudDownloadIcon } from './icons';
@@ -78,8 +78,35 @@ const calculateUnrealizedPnlForStructure = (structure: Structure, marketData: Ma
 
 
 const StructureListView: React.FC = () => {
-    const { structures, setCurrentView, marketData, setMarketData, deleteStructures, refreshDaxSpot, isLoadingSpot } = usePortfolioStore();
+    const { structures, deleteStructures, isLoading } = useStructures();
     const { settings } = useSettingsStore();
+    
+    // Market data gestito localmente (non più in Zustand)
+    const [marketData, setMarketData] = useState<MarketData>({
+        daxSpot: 21885.79,
+        riskFreeRate: 2.61,
+    });
+    const [isLoadingSpot, setIsLoadingSpot] = useState(false);
+    
+    // Funzione per ricaricare DAX spot (da implementare con API reale)
+    const refreshDaxSpot = async () => {
+        setIsLoadingSpot(true);
+        try {
+            // TODO: Implementare chiamata API per prezzo DAX reale
+            // Per ora manteniamo il valore statico
+            console.log('Refresh DAX spot non ancora implementato');
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setIsLoadingSpot(false);
+        }
+    };
+    
+    // Funzione per navigare (sostituisce setCurrentView)
+    const setCurrentView = (view: string, structureId?: number | 'new' | null) => {
+        // TODO: Implementare navigazione con React Router se necessario
+        console.log('Navigate to:', view, structureId);
+    };
     const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
     const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
     const [isBulkEditMode, setIsBulkEditMode] = useState(false);

@@ -3,7 +3,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { ExtractedTrade, OptionLeg } from '../types';
 // import { analyzeImageForTrades } from '../services/geminiService'; // TODO: Implement with tRPC
-import usePortfolioStore from '../store/portfolioStore';
+import { useStructures } from '../hooks/useStructures';
 import useSettingsStore from '../store/settingsStore';
 
 interface ImageAnalysisModalProps {
@@ -34,7 +34,10 @@ const ImageAnalysisModal: React.FC<ImageAnalysisModalProps> = ({ isOpen, onClose
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [extractedTrades, setExtractedTrades] = useState<ExtractedTrade[]>([]);
-    const { addStructure, setCurrentView } = usePortfolioStore();
+    const { addStructure } = useStructures();
+    const setCurrentView = (view: string, id?: number) => {
+        console.log('Navigate to:', view, id);
+    };
 
     useEffect(() => {
         // Cleanup function to revoke the object URL and prevent memory leaks
@@ -124,9 +127,7 @@ const ImageAnalysisModal: React.FC<ImageAnalysisModalProps> = ({ isOpen, onClose
         };
         
         addStructure(newStructure);
-        
-        const newId = usePortfolioStore.getState().nextStructureId -1;
-        setCurrentView('detail', newId);
+        // TODO: Navigare alla struttura appena creata quando implementiamo routing
         handleClose();
     };
 
