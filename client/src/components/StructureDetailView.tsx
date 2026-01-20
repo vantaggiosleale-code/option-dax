@@ -79,9 +79,14 @@ const StructureDetailView: React.FC<StructureDetailViewProps> = ({ structureId, 
     const handleLegChange = (id: number, field: keyof Omit<OptionLeg, 'id'>, value: string | number | null) => {
         if (!localStructure || isReadOnly) return;
         
-        let updatedLegs = localStructure.legs.map(leg => {
+        // Create deep copy of legs array to ensure React detects the change
+        const updatedLegs = localStructure.legs.map(leg => {
             if (leg.id === id) {
-                 let newLeg = { ...leg, [field]: value };
+                // Create a completely new leg object
+                const newLeg: OptionLeg = { 
+                    ...leg, 
+                    [field]: value 
+                };
                 
                 // Auto-set closingDate when closingPrice is entered
                 if (field === 'closingPrice') {
@@ -95,25 +100,61 @@ const StructureDetailView: React.FC<StructureDetailViewProps> = ({ structureId, 
 
                 return newLeg;
             }
-            return leg;
+            // Also return a new object for unchanged legs to ensure array reference changes
+            return { ...leg };
         });
 
-        setLocalStructure({ ...localStructure, legs: updatedLegs });
+        // Create completely new structure object
+        setLocalStructure(prev => {
+            if (!prev) return prev;
+            return { 
+                ...prev, 
+                legs: updatedLegs 
+            };
+        });
     };
 
     // FIX: Changed 'field' type from 'keyof OptionLeg' to 'keyof Omit<OptionLeg, 'id'>' to prevent passing 'id' to handleLegChange.
+    // FIX: Now updates structure immediately on every keystroke for real-time feedback
     const handleNumericInputChange = (id: number, field: keyof Omit<OptionLeg, 'id'>, value: string) => {
         const key = `${id}-${String(field)}`;
         const sanitizedValue = value.replace(',', '.');
 
         if (/^-?\d*\.?\d*$/.test(sanitizedValue) || sanitizedValue === '') {
+            // Update local display value
             setLocalInputValues(prev => ({ ...prev, [key]: sanitizedValue }));
             
+            // IMMEDIATELY update the structure for real-time calculations
             const parsed = parseFloat(sanitizedValue);
             if (!isNaN(parsed) && isFinite(parsed)) {
                 handleLegChange(id, field, parsed);
-            } else if (sanitizedValue === '') {
-                 handleLegChange(id, field, null);
+                
+                // Auto-Calculate Implied Volatility if Trade Price changes
+                if (field === 'tradePrice' && localStructure && !isReadOnly) {
+                    const leg = localStructure.legs.find(l => l.id === id);
+                    if (leg) {
+                        const timeToExpiry = getTimeToExpiry(leg.expiryDate);
+                        if (timeToExpiry > 0) {
+                            const calculatedIV = calculateImpliedVolatility(
+                                parsed,
+                                marketData.daxSpot,
+                                leg.strike,
+                                timeToExpiry,
+                                marketData.riskFreeRate,
+                                leg.optionType
+                            );
+                            if (calculatedIV !== null && !isNaN(calculatedIV)) {
+                                // Schedule IV update after current update completes
+                                setTimeout(() => {
+                                    handleLegChange(id, 'impliedVolatility', parseFloat(calculatedIV.toFixed(2)));
+                                }, 0);
+                            }
+                        }
+                    }
+                }
+            } else if (sanitizedValue === '' || sanitizedValue === '-') {
+                // Allow empty or just minus sign while typing
+                // Only update to null on blur
             }
         }
     };

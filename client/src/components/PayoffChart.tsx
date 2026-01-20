@@ -44,6 +44,19 @@ const ZoomOutIcon = () => (
 
 
 const PayoffChart: React.FC<PayoffChartProps> = ({ legs, marketData, multiplier }) => {
+    // Create a stable key from legs to force recalculation
+    const legsKey = useMemo(() => {
+        return JSON.stringify(legs.map(l => ({ 
+            id: l.id, 
+            strike: l.strike, 
+            quantity: l.quantity, 
+            optionType: l.optionType,
+            tradePrice: l.tradePrice,
+            expiryDate: l.expiryDate,
+            impliedVolatility: l.impliedVolatility
+        })));
+    }, [legs]);
+
     const initialXDomain = useMemo((): [number, number] => {
         if (legs.length === 0) {
             const range = marketData.daxSpot * 0.15;
@@ -58,7 +71,7 @@ const PayoffChart: React.FC<PayoffChartProps> = ({ legs, marketData, multiplier 
         const buffer = Math.max(strategyWidth * 0.5, marketData.daxSpot * 0.05); 
 
         return [minStrike - buffer, maxStrike + buffer];
-    }, [legs.length, marketData.daxSpot]);
+    }, [legsKey, marketData.daxSpot, legs.length]);
 
     const [xDomain, setXDomain] = useState<[number, number]>(initialXDomain);
 
