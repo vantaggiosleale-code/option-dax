@@ -128,30 +128,6 @@ const StructureDetailView: React.FC<StructureDetailViewProps> = ({ structureId, 
             const parsed = parseFloat(sanitizedValue);
             if (!isNaN(parsed) && isFinite(parsed)) {
                 handleLegChange(id, field, parsed);
-                
-                // Auto-Calculate Implied Volatility if Trade Price changes
-                if (field === 'tradePrice' && localStructure && !isReadOnly) {
-                    const leg = localStructure.legs.find(l => l.id === id);
-                    if (leg) {
-                        const timeToExpiry = getTimeToExpiry(leg.expiryDate);
-                        if (timeToExpiry > 0) {
-                            const calculatedIV = calculateImpliedVolatility(
-                                parsed,
-                                marketData.daxSpot,
-                                leg.strike,
-                                timeToExpiry,
-                                marketData.riskFreeRate,
-                                leg.optionType
-                            );
-                            if (calculatedIV !== null && !isNaN(calculatedIV)) {
-                                // Schedule IV update after current update completes
-                                setTimeout(() => {
-                                    handleLegChange(id, 'impliedVolatility', parseFloat(calculatedIV.toFixed(2)));
-                                }, 0);
-                            }
-                        }
-                    }
-                }
             } else if (sanitizedValue === '' || sanitizedValue === '-') {
                 // Allow empty or just minus sign while typing
                 // Only update to null on blur
@@ -171,27 +147,8 @@ const StructureDetailView: React.FC<StructureDetailViewProps> = ({ structureId, 
 
              handleLegChange(id, field, finalValue);
              
-             // Auto-Calculate Implied Volatility if Trade Price changes
-             if (field === 'tradePrice' && finalValue !== null && localStructure && !isReadOnly) {
-                 const leg = localStructure.legs.find(l => l.id === id);
-                 if (leg) {
-                     const timeToExpiry = getTimeToExpiry(leg.expiryDate);
-                     if (timeToExpiry > 0) {
-                         const calculatedIV = calculateImpliedVolatility(
-                             finalValue,
-                             marketData.daxSpot,
-                             leg.strike,
-                             timeToExpiry,
-                             marketData.riskFreeRate,
-                             leg.optionType
-                         );
-                         if (calculatedIV !== null && !isNaN(calculatedIV)) {
-                             // Update the leg with the new IV
-                             handleLegChange(id, 'impliedVolatility', parseFloat(calculatedIV.toFixed(2)));
-                         }
-                     }
-                 }
-             }
+             // Auto-Calculate Implied Volatility is already handled in handleNumericInputChange
+             // Removed duplicate calculation to prevent reset issues
 
              setLocalInputValues(prev => {
                 const newValues = { ...prev };

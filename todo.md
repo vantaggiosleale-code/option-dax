@@ -241,3 +241,7 @@
 
 ## Nuove Feature Richieste
 - [x] Refresh automatico prezzo DAX al caricamento pagina (invece di valore statico 21885.79) - COMPLETATO
+
+## Bug Nuovi Segnalati
+- [x] BUG: Campo "Prezzo di apertura" torna indietro automaticamente dopo la modifica - RISOLTO: rimosso calcolo automatico IV
+- [x] BUG: Possibile conflitto tra slider volatilità e campi di testo che causa reset automatico valori - RISOLTO: rimosso calcolo automatico IV duplicato
