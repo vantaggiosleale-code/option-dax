@@ -14,6 +14,7 @@ export function useStructures() {
   const updateMutation = trpc.optionStructures.update.useMutation();
   const deleteMutation = trpc.optionStructures.delete.useMutation();
   const closeMutation = trpc.optionStructures.close.useMutation();
+  const reopenMutation = trpc.optionStructures.reopen.useMutation();
   const shareMutation = trpc.optionStructures.share.useMutation();
 
   const utils = trpc.useUtils();
@@ -31,6 +32,7 @@ export function useStructures() {
         multiplier: structure.multiplier,
         legsPerContract: 2,
         legs: structure.legs.map(leg => ({
+          id: leg.id,
           optionType: leg.optionType,
           strike: leg.strike,
           expiryDate: leg.expiryDate,
@@ -57,6 +59,7 @@ export function useStructures() {
         tag: structure.tag,
         multiplier: structure.multiplier,
         legs: structure.legs.map(leg => ({
+          id: leg.id,
           optionType: leg.optionType,
           strike: leg.strike,
           expiryDate: leg.expiryDate,
@@ -117,19 +120,23 @@ export function useStructures() {
     }
   };
 
-  // Riapri struttura
-  // TODO: Implementare procedure reopen nel router optionStructures
+  // Riapri struttura (ora implementata!)
   const reopenStructure = async (structureId: number) => {
-    console.warn('reopenStructure non implementata - procedure reopen non esiste nel router');
-    throw new Error('Funzionalità non ancora implementata');
+    try {
+      await reopenMutation.mutateAsync({ id: structureId });
+      await utils.optionStructures.list.invalidate();
+    } catch (error) {
+      console.error('Errore durante la riapertura della struttura:', error);
+      throw error;
+    }
   };
 
-  // Condividi struttura con admin
-  const shareWithAdmin = async (structureId: number, adminEmail: string) => {
+  // Condividi struttura con admin (FIXED: usa adminId invece di adminEmail)
+  const shareWithAdmin = async (structureId: number, adminId: number) => {
     try {
       await shareMutation.mutateAsync({
         structureId,
-        adminEmail,
+        adminId,
       });
       refetch();
     } catch (error) {
@@ -139,7 +146,11 @@ export function useStructures() {
   };
 
   // Filtra strutture active e closed
-  const structures = structuresQuery.data || [];
+  // FIXED: Converte realizedPnl da stringa a numero
+  const structures = (structuresQuery.data || []).map(s => ({
+    ...s,
+    realizedPnl: s.realizedPnl ? Number(s.realizedPnl) : undefined,
+  })) as Structure[];
   const activeStructures = structures.filter(s => s.status === 'active');
   const closedStructures = structures.filter(s => s.status === 'closed');
 

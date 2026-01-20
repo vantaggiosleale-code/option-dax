@@ -255,9 +255,17 @@ const StructureDetailView: React.FC<StructureDetailViewProps> = ({ structureId, 
         }
     };
     
-    const handleReopen = () => {
+    const handleReopen = async () => {
         if (!localStructure || !('id' in localStructure)) return;
-        reopenStructure(localStructure.id);
+        try {
+            await reopenStructure(localStructure.id);
+            // Refresh the local structure state
+            setIsReadOnly(false);
+            setLocalStructure(prev => prev ? { ...prev, status: 'active' } : null);
+        } catch (error) {
+            console.error('Errore durante la riapertura:', error);
+            alert(`Errore durante la riapertura: ${error}`);
+        }
     };
 
     const calculatedGreeks = useMemo<{ legGreeks: (CalculatedGreeks & {id: number})[], totalGreeks: CalculatedGreeks }>(() => {
@@ -372,11 +380,11 @@ const StructureDetailView: React.FC<StructureDetailViewProps> = ({ structureId, 
 
     const handleSpotChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setMarketData({ daxSpot: value === '' ? 0 : parseFloat(value) });
+        setMarketData({ daxSpot: value === '' ? 0 : parseFloat(value), riskFreeRate: marketData.riskFreeRate });
     };
 
     const handleSpotStep = (amount: number) => {
-        setMarketData({ daxSpot: parseFloat((marketData.daxSpot + amount).toFixed(2)) });
+        setMarketData({ daxSpot: parseFloat((marketData.daxSpot + amount).toFixed(2)), riskFreeRate: marketData.riskFreeRate });
     };
 
     if (!localStructure) return <div className="text-center text-gray-400">Caricamento struttura...</div>;

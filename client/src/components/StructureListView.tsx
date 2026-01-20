@@ -145,11 +145,11 @@ const StructureListView: React.FC<StructureListViewProps> = ({ setCurrentView })
     
     const handleSpotChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setMarketData({ daxSpot: value === '' ? 0 : parseFloat(value) });
+        setMarketData({ daxSpot: value === '' ? 0 : parseFloat(value), riskFreeRate: marketData.riskFreeRate });
     };
 
     const handleSpotStep = (amount: number) => {
-        setMarketData({ daxSpot: parseFloat((marketData.daxSpot + amount).toFixed(2)) });
+        setMarketData({ daxSpot: parseFloat((marketData.daxSpot + amount).toFixed(2)), riskFreeRate: marketData.riskFreeRate });
     };
 
 

@@ -243,7 +243,7 @@ const usePortfolioStore = create<PortfolioState>((set, get) => {
 
               return { 
                   ...s, 
-                  status: 'closed', 
+                  status: 'closed' as 'closed', 
                   legs: finalLegs,
                   realizedPnl: totalRealizedPnl, 
                   closingDate: today
@@ -267,7 +267,7 @@ const usePortfolioStore = create<PortfolioState>((set, get) => {
                 });
                 return {
                     ...rest,
-                    status: 'active',
+                    status: 'active' as 'active',
                     legs: reopenedLegs,
                 };
             }

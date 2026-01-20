@@ -79,7 +79,11 @@ const PortfolioAnalysis: React.FC<PortfolioAnalysisProps> = ({ setCurrentView })
         let cumulativePnl = 0;
         let peakEquity = initialCapital;
         const data = sortedStructures.map(structure => {
-            cumulativePnl += structure.realizedPnl || 0;
+            // FIXED: Ensure realizedPnl is treated as number
+            const pnl = typeof structure.realizedPnl === 'string' 
+                ? Number(structure.realizedPnl) 
+                : (structure.realizedPnl || 0);
+            cumulativePnl += pnl;
             const currentEquity = initialCapital + cumulativePnl;
             peakEquity = Math.max(peakEquity, currentEquity);
             const drawdown = currentEquity - peakEquity;
@@ -94,11 +98,17 @@ const PortfolioAnalysis: React.FC<PortfolioAnalysisProps> = ({ setCurrentView })
     }, [closedStructures, initialCapital]);
     
     const keyMetrics = useMemo(() => {
-        const totalNetPnl = closedStructures.reduce((acc, s) => acc + (s.realizedPnl || 0), 0);
-        const winningTrades = closedStructures.filter(s => (s.realizedPnl || 0) > 0);
-        const losingTrades = closedStructures.filter(s => (s.realizedPnl || 0) < 0);
-        const grossProfit = winningTrades.reduce((acc, s) => acc + (s.realizedPnl || 0), 0);
-        const grossLoss = Math.abs(losingTrades.reduce((acc, s) => acc + (s.realizedPnl || 0), 0));
+        // Helper to safely get numeric realizedPnl
+        const getPnl = (s: any): number => {
+            if (typeof s.realizedPnl === 'string') return Number(s.realizedPnl) || 0;
+            return s.realizedPnl || 0;
+        };
+        
+        const totalNetPnl = closedStructures.reduce((acc, s) => acc + getPnl(s), 0);
+        const winningTrades = closedStructures.filter(s => getPnl(s) > 0);
+        const losingTrades = closedStructures.filter(s => getPnl(s) < 0);
+        const grossProfit = winningTrades.reduce((acc, s) => acc + getPnl(s), 0);
+        const grossLoss = Math.abs(losingTrades.reduce((acc, s) => acc + getPnl(s), 0));
         const profitFactor = grossLoss > 0 ? (grossProfit / grossLoss) : Infinity;
         const winRate = closedStructures.length > 0 ? (winningTrades.length / closedStructures.length) * 100 : 0;
         const avgWin = winningTrades.length > 0 ? grossProfit / winningTrades.length : 0;
@@ -113,7 +123,11 @@ const PortfolioAnalysis: React.FC<PortfolioAnalysisProps> = ({ setCurrentView })
         closedStructures.forEach(structure => {
             const closingDate = new Date(structure.closingDate!);
             const monthKey = `${closingDate.getFullYear()}-${String(closingDate.getMonth() + 1).padStart(2, '0')}`;
-            pnlByMonth[monthKey] = (pnlByMonth[monthKey] || 0) + (structure.realizedPnl || 0);
+            // FIXED: Safe number conversion
+            const pnl = typeof structure.realizedPnl === 'string' 
+                ? Number(structure.realizedPnl) 
+                : (structure.realizedPnl || 0);
+            pnlByMonth[monthKey] = (pnlByMonth[monthKey] || 0) + pnl;
         });
         return Object.entries(pnlByMonth).sort(([keyA], [keyB]) => keyA.localeCompare(keyB)).map(([key, pnl]) => ({
             name: new Date(key + '-02').toLocaleDateString('it-IT', { month: 'short', year: '2-digit' }),
@@ -124,7 +138,10 @@ const PortfolioAnalysis: React.FC<PortfolioAnalysisProps> = ({ setCurrentView })
     const individualPnlData = useMemo(() => {
          return [...closedStructures].sort((a, b) => new Date(a.closingDate!).getTime() - new Date(b.closingDate!).getTime()).map(structure => ({
             name: structure.tag,
-            pnl: structure.realizedPnl || 0
+            // FIXED: Safe number conversion
+            pnl: typeof structure.realizedPnl === 'string' 
+                ? Number(structure.realizedPnl) 
+                : (structure.realizedPnl || 0)
         }));
     }, [closedStructures]);
 

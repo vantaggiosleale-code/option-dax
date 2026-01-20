@@ -233,8 +233,13 @@
 ## Bug Pagina Bianca (RISOLTO)
 - [x] BUG: Pagina bianca dopo aver cliccato "Chiudi Struttura" - realizedPnl era stringa invece di numero, fixato con Number() cast
 
-## Bug Critici da Risolvere (PRIORITÀ ALTA)
-- [ ] BUG: Calcolo P&L realizzato completamente sbagliato - valori casuali (es. -169197.48€, 84584.79€)
-- [ ] BUG: Pulsante "Riapri per Modificare" non funziona nelle strutture chiuse
+## Bug Critici Risolti da Claude (IMPORTATI)
+- [x] BUG: Calcolo P&L realizzato completamente sbagliato - RISOLTO: conversione percentuali a decimali (/100)
+- [x] BUG: Pulsante "Riapri per Modificare" non funziona - RISOLTO: implementata procedure reopen nel backend
+- [x] BUG: realizedPnl stringa invece di numero - RISOLTO: aggiunta conversione automatica in useStructures
+- [x] BUG: Tipo multiplier mismatch - RISOLTO: cambiato da literal a number in types.ts
+- [x] BUG: optionType case mismatch - RISOLTO: normalizzato con toLowerCase() nel backend
+
+## Bug Ancora da Verificare
 - [ ] BUG: Schermata Analisi Portafoglio mostra valori errati (P/L, Delta, Gamma, Theta, Vega tutti a 0)
 - [ ] BUG: Quando chiudo tutte le strutture, l'Analisi Portafoglio mostra ancora P/L Aperto Totale = €0.00 invece di nessuna struttura attiva

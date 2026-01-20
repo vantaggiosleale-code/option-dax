@@ -28,20 +28,21 @@ export const optionStructuresRouter = router({
       const isAdmin = currentUser.role === 'admin';
 
       // Base query - show only structures owned by current user
-      let query = db.select().from(structures).where(eq(structures.userId, currentUser.id));
+      const conditions = [eq(structures.userId, currentUser.id)];
 
       // Filter by status
       if (input.status !== 'all') {
-        query = query.where(eq(structures.status, input.status));
+        conditions.push(eq(structures.status, input.status));
       }
 
-      const results = await query;
+      const results = await db.select().from(structures).where(and(...conditions));
 
       // Parse JSON fields
       return results.map(s => ({
         ...s,
         legs: JSON.parse(s.legs),
         sharedWith: s.sharedWith ? JSON.parse(s.sharedWith) : [],
+        status: s.status as 'active' | 'closed',
       }));
     }),
 
@@ -404,35 +405,77 @@ export const optionStructuresRouter = router({
       // Parse legs
       const legs = JSON.parse(structure.legs);
 
-      // Calculate realized P&L by closing all legs at current market prices
-      // For simplicity, use current theoretical value as closing price
-      const closingDate = new Date().toISOString();
+      // Black-Scholes helper functions
+      const erf = (x: number): number => {
+        const a1 =  0.254829592;
+        const a2 = -0.284496736;
+        const a3 =  1.421413741;
+        const a4 = -1.453152027;
+        const a5 =  1.061405429;
+        const p  =  0.3275911;
+        const sign = x >= 0 ? 1 : -1;
+        const absX = Math.abs(x);
+        const t = 1.0 / (1.0 + p * absX);
+        const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-absX * absX);
+        return sign * y;
+      };
+
+      const normCdf = (x: number): number => {
+        return 0.5 * (1.0 + erf(x / Math.sqrt(2.0)));
+      };
+
+      const closingDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
       let realizedPnl = 0;
 
       const updatedLegs = legs.map((leg: any) => {
-        // Calculate theoretical price using Black-Scholes
-        const timeToExpiry = (new Date(leg.expiryDate).getTime() - Date.now()) / (365.25 * 24 * 60 * 60 * 1000);
-        const d1 = (Math.log(input.daxSpot / leg.strike) + (input.riskFreeRate + 0.5 * leg.impliedVolatility ** 2) * timeToExpiry) / (leg.impliedVolatility * Math.sqrt(timeToExpiry));
-        const d2 = d1 - leg.impliedVolatility * Math.sqrt(timeToExpiry);
+        // Calculate time to expiry in years
+        const expiryTime = new Date(leg.expiryDate).getTime();
+        const nowTime = Date.now();
+        const timeToExpiry = Math.max((expiryTime - nowTime) / (365.25 * 24 * 60 * 60 * 1000), 0.000001);
         
-        // Approssimazione della CDF normale standard (Abramowitz & Stegun)
-        const normCdf = (x: number) => {
-          const t = 1 / (1 + 0.2316419 * Math.abs(x));
-          const d = 0.3989423 * Math.exp(-x * x / 2);
-          const prob = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
-          return x > 0 ? 1 - prob : prob;
-        };
+        // Convert percentages to decimals (CRITICAL FIX!)
+        const r = input.riskFreeRate / 100;
+        const sigma = leg.impliedVolatility / 100;
+        const S = input.daxSpot;
+        const K = leg.strike;
         
-        let theoreticalPrice;
-        if (leg.optionType === 'call') {
-          theoreticalPrice = input.daxSpot * normCdf(d1) - leg.strike * Math.exp(-input.riskFreeRate * timeToExpiry) * normCdf(d2);
+        // Black-Scholes d1 and d2
+        const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * timeToExpiry) / (sigma * Math.sqrt(timeToExpiry));
+        const d2 = d1 - sigma * Math.sqrt(timeToExpiry);
+        
+        // Calculate theoretical price
+        let theoreticalPrice: number;
+        // Normalize optionType to handle both 'Call'/'Put' and 'call'/'put'
+        const optionTypeLower = (leg.optionType || '').toLowerCase();
+        
+        if (optionTypeLower === 'call') {
+          theoreticalPrice = S * normCdf(d1) - K * Math.exp(-r * timeToExpiry) * normCdf(d2);
         } else {
-          theoreticalPrice = leg.strike * Math.exp(-input.riskFreeRate * timeToExpiry) * normCdf(-d2) - input.daxSpot * normCdf(-d1);
+          theoreticalPrice = K * Math.exp(-r * timeToExpiry) * normCdf(-d2) - S * normCdf(-d1);
         }
 
-        // Calculate P&L for this leg
-        const legPnl = (theoreticalPrice - leg.tradePrice) * leg.quantity * structure.multiplier - leg.openingCommission - leg.closingCommission;
-        realizedPnl += legPnl;
+        // Ensure non-negative price
+        theoreticalPrice = Math.max(0, theoreticalPrice);
+
+        // Calculate P&L for this leg (CORRECTED FORMULA!)
+        // P&L in points: for long positions (quantity > 0): currentPrice - tradePrice
+        //                for short positions (quantity < 0): tradePrice - currentPrice
+        // Then multiply by quantity (which includes sign) and multiplier
+        let pnlPoints: number;
+        if (leg.quantity > 0) {
+          // Long position: profit when price goes up
+          pnlPoints = (theoreticalPrice - leg.tradePrice) * leg.quantity;
+        } else {
+          // Short position: profit when price goes down
+          pnlPoints = (leg.tradePrice - theoreticalPrice) * Math.abs(leg.quantity);
+        }
+        
+        const grossPnl = pnlPoints * structure.multiplier;
+        const openingCommission = (leg.openingCommission || 2) * Math.abs(leg.quantity);
+        const closingCommission = (leg.closingCommission || 2) * Math.abs(leg.quantity);
+        const netPnl = grossPnl - openingCommission - closingCommission;
+        
+        realizedPnl += netPnl;
 
         return {
           ...leg,
@@ -453,6 +496,56 @@ export const optionStructuresRouter = router({
         .where(eq(structures.id, input.id));
 
       return { success: true, realizedPnl };
+    }),
+
+  /**
+   * Reopen a closed structure (change status back to active)
+   */
+  reopen: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const db = await getDb();
+      if (!db) throw new Error('Database not available');
+
+      // Check ownership
+      const [structure] = await db
+        .select()
+        .from(structures)
+        .where(eq(structures.id, input.id))
+        .limit(1);
+
+      if (!structure) {
+        throw new Error('Structure not found');
+      }
+
+      if (structure.userId !== ctx.user.id) {
+        throw new Error('Access denied: You can only reopen your own structures');
+      }
+
+      if (structure.status === 'active') {
+        throw new Error('Structure is already active');
+      }
+
+      // Parse legs and remove closing info
+      const legs = JSON.parse(structure.legs);
+      const updatedLegs = legs.map((leg: any) => ({
+        ...leg,
+        closingPrice: null,
+        closingDate: null,
+      }));
+
+      // Update structure
+      await db
+        .update(structures)
+        .set({
+          status: 'active',
+          legs: JSON.stringify(updatedLegs),
+          closingDate: null,
+          realizedPnl: null,
+        })
+        .where(eq(structures.id, input.id));
+
+      return { success: true };
     }),
 
   /**
