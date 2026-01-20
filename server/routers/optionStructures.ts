@@ -457,6 +457,11 @@ export const optionStructuresRouter = router({
         // Ensure non-negative price
         theoreticalPrice = Math.max(0, theoreticalPrice);
 
+        // Use manual closingPrice if already set, otherwise use theoretical
+        const finalClosingPrice = leg.closingPrice !== null && leg.closingPrice !== undefined 
+          ? leg.closingPrice 
+          : theoreticalPrice;
+
         // Calculate P&L for this leg (CORRECTED FORMULA!)
         // P&L in points: for long positions (quantity > 0): currentPrice - tradePrice
         //                for short positions (quantity < 0): tradePrice - currentPrice
@@ -464,10 +469,10 @@ export const optionStructuresRouter = router({
         let pnlPoints: number;
         if (leg.quantity > 0) {
           // Long position: profit when price goes up
-          pnlPoints = (theoreticalPrice - leg.tradePrice) * leg.quantity;
+          pnlPoints = (finalClosingPrice - leg.tradePrice) * leg.quantity;
         } else {
           // Short position: profit when price goes down
-          pnlPoints = (leg.tradePrice - theoreticalPrice) * Math.abs(leg.quantity);
+          pnlPoints = (leg.tradePrice - finalClosingPrice) * Math.abs(leg.quantity);
         }
         
         const grossPnl = pnlPoints * structure.multiplier;
@@ -479,8 +484,8 @@ export const optionStructuresRouter = router({
 
         return {
           ...leg,
-          closingPrice: theoreticalPrice,
-          closingDate,
+          closingPrice: finalClosingPrice,
+          closingDate: leg.closingDate || closingDate,
         };
       });
 
