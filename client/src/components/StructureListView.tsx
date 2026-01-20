@@ -382,8 +382,8 @@ const StructureListView: React.FC<StructureListViewProps> = ({ setCurrentView })
                                                 <p className="text-sm text-gray-400">Chiusa il: {structure.closingDate}</p>
                                             </div>
                                             <div className="text-right">
-                                                <span className={`font-mono font-bold text-lg ${structure.realizedPnl && structure.realizedPnl >= 0 ? 'text-profit' : 'text-loss'}`}>
-                                                    {structure.realizedPnl?.toFixed(2) ?? 'N/A'} €
+                                                <span className={`font-mono font-bold text-lg ${structure.realizedPnl && Number(structure.realizedPnl) >= 0 ? 'text-profit' : 'text-loss'}`}>
+                                                    {structure.realizedPnl != null ? Number(structure.realizedPnl).toFixed(2) : 'N/A'} €
                                                 </span>
                                             </div>
                                         </div>

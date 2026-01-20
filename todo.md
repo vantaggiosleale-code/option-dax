@@ -229,3 +229,12 @@
 ## Bug Critici (RISOLTO)
 - [x] BUG: Math.erf is not a function - implementata approssimazione CDF normale (Abramowitz & Stegun)
 - [x] BUG: Strutture condivise tra tutti gli utenti - fixato filtro per mostrare solo strutture dell'utente corrente
+
+## Bug Pagina Bianca (RISOLTO)
+- [x] BUG: Pagina bianca dopo aver cliccato "Chiudi Struttura" - realizedPnl era stringa invece di numero, fixato con Number() cast
+
+## Bug Critici da Risolvere (PRIORITÀ ALTA)
+- [ ] BUG: Calcolo P&L realizzato completamente sbagliato - valori casuali (es. -169197.48€, 84584.79€)
+- [ ] BUG: Pulsante "Riapri per Modificare" non funziona nelle strutture chiuse
+- [ ] BUG: Schermata Analisi Portafoglio mostra valori errati (P/L, Delta, Gamma, Theta, Vega tutti a 0)
+- [ ] BUG: Quando chiudo tutte le strutture, l'Analisi Portafoglio mostra ancora P/L Aperto Totale = €0.00 invece di nessuna struttura attiva

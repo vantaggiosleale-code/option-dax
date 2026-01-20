@@ -109,7 +109,8 @@ export function useStructures() {
         daxSpot,
         riskFreeRate,
       });
-      refetch();
+      // Aspetta che il refetch sia completato prima di tornare
+      await utils.optionStructures.list.invalidate();
     } catch (error) {
       console.error('Errore durante la chiusura della struttura:', error);
       throw error;

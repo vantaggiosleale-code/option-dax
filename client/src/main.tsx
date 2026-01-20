@@ -5,6 +5,7 @@ import { httpBatchLink } from '@trpc/client';
 // import superjson from 'superjson'; // DISABILITATO
 import { trpc } from './lib/trpc';
 import App from './App';
+import ErrorBoundary from './components/ErrorBoundary';
 
 function Root() {
   const [queryClient] = useState(() => new QueryClient({
@@ -27,11 +28,13 @@ function Root() {
   );
 
   return (
-    <trpc.Provider client={trpcClient} queryClient={queryClient}>
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
-    </trpc.Provider>
+    <ErrorBoundary>
+      <trpc.Provider client={trpcClient} queryClient={queryClient}>
+        <QueryClientProvider client={queryClient}>
+          <App />
+        </QueryClientProvider>
+      </trpc.Provider>
+    </ErrorBoundary>
   );
 }
 
