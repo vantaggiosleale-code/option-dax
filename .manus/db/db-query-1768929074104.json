@@ -1,0 +1,15 @@
+{
+  "query": "SELECT id, tag, status FROM structures WHERE tag = 'LS76' LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3oHtB2ru8zC82QY.root --database K4zM37evGzfMf8m3Ckfnqp --execute SELECT id, tag, status FROM structures WHERE tag = 'LS76' LIMIT 1;",
+  "rows": [
+    {
+      "id": "60004",
+      "tag": "LS76",
+      "status": "active"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttag\tstatus\n60004\tLS76\tactive\n",
+  "stderr": "",
+  "execution_time_ms": 145
+}

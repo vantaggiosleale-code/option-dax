@@ -87,6 +87,10 @@ const PayoffChart: React.FC<PayoffChartProps> = ({ legs, marketData, multiplier 
         let pnlTodayPoints = 0;
 
         legs.forEach((leg: OptionLeg) => {
+            // Skip closed legs (legs with closing price set)
+            const isClosed = leg.closingPrice !== null && leg.closingPrice !== undefined;
+            if (isClosed) return;
+
             const expiryValue = leg.optionType === 'Call'
                 ? Math.max(0, currentSpot - leg.strike)
                 : Math.max(0, leg.strike - currentSpot);
@@ -137,6 +141,10 @@ const PayoffChart: React.FC<PayoffChartProps> = ({ legs, marketData, multiplier 
         let pnlTodayPoints = 0;
 
         legs.forEach((leg: OptionLeg) => {
+            // Skip closed legs (legs with closing price set)
+            const isClosed = leg.closingPrice !== null && leg.closingPrice !== undefined;
+            if (isClosed) return;
+
             const expiryValue = leg.optionType === 'Call'
                 ? Math.max(0, currentSpot - leg.strike)
                 : Math.max(0, leg.strike - currentSpot);

@@ -254,3 +254,5 @@
 - [x] BUG CRITICO: Prezzi di chiusura non vengono salvati quando si clicca "Salva Modifiche" - RISOLTO: aggiunto closingPrice e closingDate al mapping legs
 - [x] 🔥 BUG GRAVISSIMO: Procedura close SOVRASCRIVE prezzi di chiusura manuali con calcolo Black-Scholes teorico - RISOLTO: usa closingPrice manuale se presente, altrimenti teorico
 - [x] 🔴 BUG CRITICO: Strutture ATTIVE non usano prezzi di chiusura manuali per calcolare P&L - RISOLTO: usa closingPrice manuale se presente, altrimenti Black-Scholes teorico
+
+- [x] 🔴 BUG CRITICO GRAFICO PAYOFF: Long Strangle (Long Put + Long Call) mostra payoff invertito come Short Call - RISOLTO: PayoffChart ora filtra gambe chiuse (con closingPrice impostato) dal calcolo payoff

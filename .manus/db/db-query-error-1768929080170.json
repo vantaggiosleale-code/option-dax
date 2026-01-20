@@ -1,0 +1,15 @@
+{
+  "query": "SELECT s.id, s.tag, l.legId, l.optionType, l.strike, l.quantity, l.tradePrice \nFROM structures s \nJOIN JSON_TABLE(s.legs, '$[*]' COLUMNS(\n  legId INT PATH '$.id',\n  optionType VARCHAR(10) PATH '$.optionType',\n  strike DECIMAL(10,2) PATH '$.strike',\n  quantity INT PATH '$.quantity',\n  tradePrice DECIMAL(10,2) PATH '$.tradePrice'\n)) l\nWHERE s.tag = 'LS76';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3oHtB2ru8zC82QY.root --database K4zM37evGzfMf8m3Ckfnqp --execute SELECT s.id, s.tag, l.legId, l.optionType, l.strike, l.quantity, l.tradePrice \nFROM structures s \nJOIN JSON_TABLE(s.legs, '$[*]' COLUMNS(\n  legId INT PATH '$.id',\n  optionType VARCHAR(10) PATH '$.optionType',\n  strike DECIMAL(10,2) PATH '$.strike',\n  quantity INT PATH '$.quantity',\n  tradePrice DECIMAL(10,2) PATH '$.tradePrice'\n)) l\nWHERE s.tag = 'LS76';",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the manual that corresponds to your TiDB version for the right syntax to use line 3 column 17 near \"(s.legs, '$[*]' COLUMNS(",
+    "  legId INT PATH '$.id',",
+    "  optionType VARCHAR(10) PATH '$.optionType',",
+    "  strike DECIMAL(10,2) PATH '$.strike',",
+    "  quantity INT PATH '$.quantity',",
+    "  tradePrice DECIMAL(10,2) PATH '$.tradePrice'",
+    ")) l",
+    "WHERE s.tag = 'LS76'\""
+  ]
+}
