@@ -331,3 +331,9 @@
 - [x] Fix tRPC ritorna HTML invece di JSON (salvataggio struttura) - Risolto con fix DAX price
 - [x] Fix tRPC ritorna HTML invece di JSON (aggiornamento struttura) - Risolto con fix DAX price
 - [x] Fix missing key prop in StructureDetailView - Già presente
+
+## Riscrittura Completa GraphicModal (COMPLETATO)
+- [x] Sfondo modal BIANCO SOLIDO invece di trasparente
+- [x] Pulsanti tipo con BORDO SPESSO NERO (4px) e TESTO NERO su SFONDO BIANCO
+- [x] Aumentare altezza template da 800px a 1000px per mostrare footer completo
+- [x] Testo modal nero per contrasto su sfondo bianco

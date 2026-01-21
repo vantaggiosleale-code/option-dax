@@ -40,7 +40,7 @@ export function GraphicTemplate({ type, data }: GraphicTemplateProps) {
     return (
       <div className="graphic-card" style={{
         width: '600px',
-        height: '800px',
+        height: '1000px',
         background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
         color: 'white',
         padding: '40px',
@@ -140,7 +140,7 @@ export function GraphicTemplate({ type, data }: GraphicTemplateProps) {
     return (
       <div className="graphic-card" style={{
         width: '600px',
-        height: '800px',
+        height: '1000px',
         background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
         color: 'white',
         padding: '40px',

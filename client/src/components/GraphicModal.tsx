@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { trpc } from '@/lib/trpc';
@@ -99,7 +99,7 @@ export function GraphicModal({ isOpen, onClose, structureId, structureTag }: Gra
       // Calcola P&L totale
       let totalPnlPoints = 0;
       (structure.legs as OptionLeg[]).forEach((leg: OptionLeg) => {
-        const closingPrice = leg.closingPrice || leg.tradePrice;
+        const closingPrice = leg.closingPrice || 0;
         const pnlPoints = leg.quantity > 0
           ? (closingPrice - leg.tradePrice) * leg.quantity
           : (leg.tradePrice - closingPrice) * Math.abs(leg.quantity);
@@ -108,17 +108,19 @@ export function GraphicModal({ isOpen, onClose, structureId, structureTag }: Gra
 
       const pnlEuro = totalPnlPoints * structure.multiplier;
 
-      const openingDate = new Date(structure.createdAt);
-      const closingDate = structure.closingDate ? new Date(structure.closingDate) : now;
-      const duration = Math.ceil((closingDate.getTime() - openingDate.getTime()) / (1000 * 60 * 60 * 24));
+      // Calcola durata operazione
+      const openDate = new Date(createdAtStr);
+      const closeDate = now;
+      const durationDays = Math.floor((closeDate.getTime() - openDate.getTime()) / (1000 * 60 * 60 * 24));
 
       return {
         tag: structure.tag,
-        openingDate: createdAtStr,
-        closingDate: closingDate.toISOString(),
+        date: now.toISOString(),
+        daxSpot: marketData.daxSpot,
+        legs: structure.legs as OptionLeg[],
         pnlPoints: totalPnlPoints,
         pnlEuro,
-        duration,
+        durationDays,
       };
     }
 
@@ -126,39 +128,30 @@ export function GraphicModal({ isOpen, onClose, structureId, structureTag }: Gra
   };
 
   const handleGenerate = async () => {
-    console.log('[GraphicModal] Starting generation...');
-    console.log('[GraphicModal] templateRef.current:', templateRef.current);
-
-    if (!templateRef.current || !structure) {
-      console.error('[GraphicModal] Missing ref or structure');
-      toast.error('Errore: template non pronto');
+    if (!templateRef.current) {
+      toast.error('Template non pronto');
       return;
     }
 
     setIsGenerating(true);
+
     try {
-      console.log('[GraphicModal] Calling toPng...');
-      
-      // Converti HTML → PNG
+      // Converti HTML a PNG
       const dataUrl = await toPng(templateRef.current, {
         quality: 1.0,
         pixelRatio: 2,
-        backgroundColor: '#1a1a2e',
+        backgroundColor: '#1e293b', // Sfondo blu navy come nel template
       });
 
-      console.log('[GraphicModal] toPng success! Length:', dataUrl.length);
-
-      // Invia al backend per upload S3
+      // Salva su S3 via backend
       await saveGraphicMutation.mutateAsync({
         structureId,
         type: selectedType,
         imageBase64: dataUrl,
       });
-
-      toast.success('Grafica generata con successo!');
     } catch (error) {
-      console.error('[GraphicModal] Error:', error);
-      toast.error(`Errore durante la generazione: ${error}`);
+      console.error('Errore generazione:', error);
+      toast.error('Errore durante la generazione');
     } finally {
       setIsGenerating(false);
     }
@@ -166,137 +159,113 @@ export function GraphicModal({ isOpen, onClose, structureId, structureTag }: Gra
 
   const handleDownload = () => {
     if (!generatedImageUrl) return;
-
     const link = document.createElement('a');
     link.href = generatedImageUrl;
-    link.download = `${structureTag}-${selectedType}-${Date.now()}.png`;
+    link.download = `${structureTag}-${selectedType}.png`;
     link.click();
-    toast.success('Download avviato!');
   };
 
   const handleCopyLink = () => {
     if (!generatedImageUrl) return;
-
     navigator.clipboard.writeText(generatedImageUrl);
-    toast.success('Link copiato negli appunti!');
+    toast.success('Link copiato!');
   };
 
   const graphicData = prepareGraphicData();
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white">
         <DialogHeader>
-          <DialogTitle>Genera Grafica Telegram</DialogTitle>
+          <DialogTitle className="text-gray-900">Genera Grafica Telegram</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
-          {/* Selezione Tipo */}
-          <div>
-            <label className="text-sm font-medium mb-2 block">Tipo Grafica</label>
-            <div className="grid grid-cols-3 gap-3">
-              <Button
-                variant={selectedType === 'apertura' ? 'default' : 'outline'}
-                onClick={() => {
-                  setSelectedType('apertura');
-                  setGeneratedImageUrl(null);
-                }}
-                className={`h-auto py-3 ${selectedType !== 'apertura' ? 'bg-slate-600 hover:bg-slate-500' : ''}`}
-              >
-                <div className="text-center">
-                  <div className="font-semibold">Apertura</div>
-                  <div className="text-xs opacity-70">Nuova Operazione</div>
-                </div>
-              </Button>
+        {/* Pulsanti tipo grafica - SFONDO BIANCO, BORDO NERO SPESSO, TESTO NERO */}
+        <div className="flex gap-2 mb-4">
+          <button
+            onClick={() => setSelectedType('apertura')}
+            className={`flex-1 px-4 py-3 rounded-lg font-semibold text-base transition-all ${
+              selectedType === 'apertura'
+                ? 'bg-blue-600 text-white border-4 border-blue-700'
+                : 'bg-white text-gray-900 border-4 border-gray-900 hover:bg-gray-100'
+            }`}
+          >
+            Apertura
+          </button>
+          <button
+            onClick={() => setSelectedType('aggiustamento')}
+            className={`flex-1 px-4 py-3 rounded-lg font-semibold text-base transition-all ${
+              selectedType === 'aggiustamento'
+                ? 'bg-blue-600 text-white border-4 border-blue-700'
+                : 'bg-white text-gray-900 border-4 border-gray-900 hover:bg-gray-100'
+            }`}
+          >
+            Aggiustamento
+          </button>
+          <button
+            onClick={() => setSelectedType('chiusura')}
+            className={`flex-1 px-4 py-3 rounded-lg font-semibold text-base transition-all ${
+              selectedType === 'chiusura'
+                ? 'bg-blue-600 text-white border-4 border-blue-700'
+                : 'bg-white text-gray-900 border-4 border-gray-900 hover:bg-gray-100'
+            }`}
+          >
+            Chiusura
+          </button>
+        </div>
 
-              <Button
-                variant={selectedType === 'aggiustamento' ? 'default' : 'outline'}
-                onClick={() => {
-                  setSelectedType('aggiustamento');
-                  setGeneratedImageUrl(null);
-                }}
-                className={`h-auto py-3 ${selectedType !== 'aggiustamento' ? 'bg-slate-600 hover:bg-slate-500' : ''}`}
-              >
-                <div className="text-center">
-                  <div className="font-semibold">Aggiustamento</div>
-                  <div className="text-xs opacity-70">Roll/Modifica</div>
-                </div>
-              </Button>
-
-              <Button
-                variant={selectedType === 'chiusura' ? 'default' : 'outline'}
-                onClick={() => {
-                  setSelectedType('chiusura');
-                  setGeneratedImageUrl(null);
-                }}
-                className={`h-auto py-3 ${selectedType !== 'chiusura' ? 'bg-slate-600 hover:bg-slate-500' : ''}`}
-              >
-                <div className="text-center">
-                  <div className="font-semibold">Chiusura</div>
-                  <div className="text-xs opacity-70">Risultato Finale</div>
-                </div>
-              </Button>
-            </div>
+        {/* Preview template */}
+        <div className="bg-gray-100 p-4 rounded-lg border-2 border-gray-300">
+          <div ref={templateRef} className="inline-block">
+            {graphicData && (
+              <GraphicTemplate
+                type={selectedType}
+                data={graphicData}
+              />
+            )}
           </div>
+        </div>
 
-          {/* Preview Template (visibile) */}
-          {!generatedImageUrl && graphicData && (
-            <div>
-              <label className="text-sm font-medium mb-2 block">Anteprima:</label>
-              <div className="flex justify-center">
-                <div ref={templateRef} className="inline-block">
-                  <GraphicTemplate type={selectedType} data={graphicData} />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Immagine Generata */}
-          {generatedImageUrl && (
-            <div className="space-y-4">
-              <label className="text-sm font-medium block">Immagine Generata:</label>
-              <div className="border rounded-lg overflow-hidden bg-gray-50">
-                <img
-                  src={generatedImageUrl}
-                  alt="Grafica generata"
-                  className="w-full h-auto"
-                />
-              </div>
-
-              <div className="flex gap-3">
-                <Button onClick={handleDownload} className="flex-1">
-                  <Download className="w-4 h-4 mr-2" />
-                  Scarica PNG
-                </Button>
-                <Button onClick={handleCopyLink} variant="outline" className="flex-1">
-                  <Copy className="w-4 h-4 mr-2" />
-                  Copia Link
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {/* Pulsante Genera */}
+        {/* Pulsanti azione */}
+        <div className="flex gap-2 mt-4">
           {!generatedImageUrl && (
             <Button
               onClick={handleGenerate}
-              disabled={isGenerating || !structure || !graphicData}
-              className="w-full"
-              size="lg"
+              disabled={isGenerating || !graphicData}
+              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
             >
               {isGenerating ? (
                 <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Generazione in corso...
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Generazione...
                 </>
               ) : (
-                <>
-                  📸 Genera Grafica
-                </>
+                '📸 Genera Grafica'
               )}
             </Button>
           )}
+
+          {generatedImageUrl && (
+            <>
+              <Button onClick={handleDownload} variant="outline" className="flex-1 border-2 border-gray-900 text-gray-900 font-semibold hover:bg-gray-100">
+                <Download className="mr-2 h-4 w-4" />
+                Scarica PNG
+              </Button>
+              <Button onClick={handleCopyLink} variant="outline" className="flex-1 border-2 border-gray-900 text-gray-900 font-semibold hover:bg-gray-100">
+                <Copy className="mr-2 h-4 w-4" />
+                Copia Link
+              </Button>
+            </>
+          )}
         </div>
+
+        {/* Immagine generata */}
+        {generatedImageUrl && (
+          <div className="mt-4 bg-gray-100 p-4 rounded-lg border-2 border-gray-300">
+            <h3 className="text-sm font-semibold mb-2 text-gray-900">Immagine Generata:</h3>
+            <img src={generatedImageUrl} alt="Grafica generata" className="w-full rounded border-2 border-gray-400" />
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );
