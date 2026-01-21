@@ -102,16 +102,16 @@ export function GraphicTemplate({ type, data }: GraphicTemplateProps) {
                     {leg.quantity > 0 ? 'Long' : 'Short'} {leg.optionType} {formatPrice(leg.strike)}
                   </div>
                   <div style={{ fontSize: '14px', color: '#94a3b8' }}>
-                    Qty: {Math.abs(leg.quantity)} • Prezzo: {formatPrice(leg.tradePrice)}
+                    Qty: {Math.abs(leg.quantity)} • Prezzo: {formatPrice(leg.tradePrice)} • Scad: {formatDate(leg.expiryDate)}
                   </div>
                 </div>
                 <div style={{
                   background: leg.quantity > 0 ? '#10b981' : '#ef4444',
                   color: 'white',
-                  padding: '6px 12px',
+                  padding: '8px 16px',
                   borderRadius: '6px',
-                  fontSize: '14px',
-                  fontWeight: '600'
+                  fontSize: '16px',
+                  fontWeight: '700'
                 }}>
                   {leg.quantity > 0 ? 'LONG' : 'SHORT'}
                 </div>
@@ -199,7 +199,12 @@ export function GraphicTemplate({ type, data }: GraphicTemplateProps) {
                   border: '1px solid rgba(239, 68, 68, 0.3)',
                   fontSize: '14px'
                 }}>
-                  {leg.quantity > 0 ? 'Long' : 'Short'} {leg.optionType} {formatPrice(leg.strike)}
+                  <div style={{ fontWeight: '600', marginBottom: '4px' }}>
+                    {leg.quantity > 0 ? 'Long' : 'Short'} {leg.optionType} {formatPrice(leg.strike)}
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#94a3b8' }}>
+                    Qty: {Math.abs(leg.quantity)} • Prezzo: {formatPrice(leg.tradePrice)} • Scad: {formatDate(leg.expiryDate)}
+                  </div>
                 </div>
               ))}
             </div>
@@ -221,7 +226,12 @@ export function GraphicTemplate({ type, data }: GraphicTemplateProps) {
                   border: '1px solid rgba(16, 185, 129, 0.3)',
                   fontSize: '14px'
                 }}>
-                  {leg.quantity > 0 ? 'Long' : 'Short'} {leg.optionType} {formatPrice(leg.strike)}
+                  <div style={{ fontWeight: '600', marginBottom: '4px' }}>
+                    {leg.quantity > 0 ? 'Long' : 'Short'} {leg.optionType} {formatPrice(leg.strike)}
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#94a3b8' }}>
+                    Qty: {Math.abs(leg.quantity)} • Prezzo: {formatPrice(leg.tradePrice)} • Scad: {formatDate(leg.expiryDate)}
+                  </div>
                 </div>
               ))}
             </div>

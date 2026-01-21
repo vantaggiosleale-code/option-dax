@@ -185,7 +185,7 @@ export function GraphicModal({ isOpen, onClose, structureId, structureTag }: Gra
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Genera Grafica Telegram</DialogTitle>
         </DialogHeader>
@@ -201,10 +201,9 @@ export function GraphicModal({ isOpen, onClose, structureId, structureTag }: Gra
                   setSelectedType('apertura');
                   setGeneratedImageUrl(null);
                 }}
-                className="h-auto py-4 flex flex-col items-center gap-2"
+                className="h-auto py-3"
               >
-                <span className="text-2xl">📊</span>
-                <div>
+                <div className="text-center">
                   <div className="font-semibold">Apertura</div>
                   <div className="text-xs opacity-70">Nuova Operazione</div>
                 </div>
@@ -216,10 +215,9 @@ export function GraphicModal({ isOpen, onClose, structureId, structureTag }: Gra
                   setSelectedType('aggiustamento');
                   setGeneratedImageUrl(null);
                 }}
-                className="h-auto py-4 flex flex-col items-center gap-2"
+                className="h-auto py-3"
               >
-                <span className="text-2xl">🔄</span>
-                <div>
+                <div className="text-center">
                   <div className="font-semibold">Aggiustamento</div>
                   <div className="text-xs opacity-70">Roll/Modifica</div>
                 </div>
@@ -231,10 +229,9 @@ export function GraphicModal({ isOpen, onClose, structureId, structureTag }: Gra
                   setSelectedType('chiusura');
                   setGeneratedImageUrl(null);
                 }}
-                className="h-auto py-4 flex flex-col items-center gap-2"
+                className="h-auto py-3"
               >
-                <span className="text-2xl">✅</span>
-                <div>
+                <div className="text-center">
                   <div className="font-semibold">Chiusura</div>
                   <div className="text-xs opacity-70">Risultato Finale</div>
                 </div>
@@ -246,8 +243,10 @@ export function GraphicModal({ isOpen, onClose, structureId, structureTag }: Gra
           {!generatedImageUrl && graphicData && (
             <div>
               <label className="text-sm font-medium mb-2 block">Anteprima:</label>
-              <div ref={templateRef} className="inline-block">
-                <GraphicTemplate type={selectedType} data={graphicData} />
+              <div className="flex justify-center">
+                <div ref={templateRef} className="inline-block">
+                  <GraphicTemplate type={selectedType} data={graphicData} />
+                </div>
               </div>
             </div>
           )}

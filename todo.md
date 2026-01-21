@@ -303,3 +303,12 @@
 - [x] Test end-to-end generazione grafica
 - [ ] Rimuovere componente SimpleGraphicTest (test temporaneo)
 - [ ] Rimuovere pulsante TEST dall'header
+
+## Fix UI Modal Generazione Grafiche (COMPLETATO)
+- [x] Rimuovere icone emoji dai pulsanti tipo grafica (solo testo)
+- [x] Fixare pulsanti trasparenti con sfondo solido
+- [x] Ridurre dimensioni modal (max-w-2xl invece di max-w-4xl)
+- [x] Rimuovere scroll interno dalla preview template
+- [x] Ingrandire badge LONG/SHORT per migliore visibilità
+- [x] Testare UI fixata su struttura reale
+- [x] Aggiungere data scadenza contratto nelle card gambe
