@@ -6,6 +6,7 @@ import { BlackScholes, getTimeToExpiry } from '../services/blackScholes';
 import { PlusIcon, ArchiveIcon, ScanIcon, PortfolioIcon, UploadIcon, EditIcon, TrashIcon, CloudDownloadIcon } from './icons';
 import ImageAnalysisModal from './ImageAnalysisModal';
 import HistoricalImportModal from './HistoricalImportModal';
+import { GraphicModal } from './GraphicModal';
 import useSettingsStore from '../store/settingsStore';
 import { useMarketDataStore } from '../stores/marketDataStore';
 import { trpc } from '../lib/trpc';
@@ -116,6 +117,7 @@ const StructureListView: React.FC<StructureListViewProps> = ({ setCurrentView })
     const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
     const [isBulkEditMode, setIsBulkEditMode] = useState(false);
     const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+    const [graphicModalStructure, setGraphicModalStructure] = useState<{ id: number; tag: string; isClosed: boolean } | null>(null);
 
     const activeStructures = structures.filter(s => s.status === 'active');
     const closedStructures = structures.filter(s => s.status === 'closed');
@@ -398,14 +400,30 @@ const StructureListView: React.FC<StructureListViewProps> = ({ setCurrentView })
                                             </div>
                                         )}
                                         <div className={`flex justify-between items-center w-full ${isBulkEditMode ? 'py-4 pr-4' : 'p-4'}`}>
-                                            <div>
+                                            <div className="flex-1">
                                                 <h2 className="font-semibold text-lg text-gray-300">{structure.tag}</h2>
                                                 <p className="text-sm text-gray-400">Chiusa il: {structure.closingDate}</p>
                                             </div>
-                                            <div className="text-right">
-                                                <span className={`font-mono font-bold text-lg ${structure.realizedPnl && Number(structure.realizedPnl) >= 0 ? 'text-profit' : 'text-loss'}`}>
-                                                    {structure.realizedPnl != null ? Number(structure.realizedPnl).toFixed(2) : 'N/A'} €
-                                                </span>
+                                            <div className="flex items-center space-x-4">
+                                                <div className="text-right">
+                                                    <span className={`font-mono font-bold text-lg ${structure.realizedPnl && Number(structure.realizedPnl) >= 0 ? 'text-profit' : 'text-loss'}`}>
+                                                        {structure.realizedPnl != null ? Number(structure.realizedPnl).toFixed(2) : 'N/A'} €
+                                                    </span>
+                                                </div>
+                                                {!isBulkEditMode && (
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setGraphicModalStructure({ id: structure.id, tag: structure.tag, isClosed: true });
+                                                        }}
+                                                        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg flex items-center space-x-2 transition"
+                                                    >
+                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                            <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                                                        </svg>
+                                                        <span>📸 Grafica</span>
+                                                    </button>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -439,6 +457,17 @@ const StructureListView: React.FC<StructureListViewProps> = ({ setCurrentView })
                         </button>
                     </div>
                 </div>
+            )}
+            
+            {/* Modal Grafica per strutture chiuse */}
+            {graphicModalStructure && (
+                <GraphicModal
+                    isOpen={true}
+                    onClose={() => setGraphicModalStructure(null)}
+                    structureId={graphicModalStructure.id}
+                    structureTag={graphicModalStructure.tag}
+                    isClosed={graphicModalStructure.isClosed}
+                />
             )}
         </>
     );

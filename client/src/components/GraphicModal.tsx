@@ -14,11 +14,12 @@ interface GraphicModalProps {
   onClose: () => void;
   structureId: number;
   structureTag: string;
+  isClosed?: boolean; // Se true, mostra solo tipo "Chiusura"
 }
 
 type GraphicType = 'apertura' | 'aggiustamento' | 'chiusura';
 
-export function GraphicModal({ isOpen, onClose, structureId, structureTag }: GraphicModalProps) {
+export function GraphicModal({ isOpen, onClose, structureId, structureTag, isClosed = false }: GraphicModalProps) {
   const [selectedType, setSelectedType] = useState<GraphicType>('apertura');
   const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -28,9 +29,10 @@ export function GraphicModal({ isOpen, onClose, structureId, structureTag }: Gra
   useEffect(() => {
     if (isOpen) {
       setGeneratedImageUrl(null);
-      setSelectedType('apertura');
+      // Se struttura chiusa, imposta tipo "chiusura", altrimenti "apertura"
+      setSelectedType(isClosed ? 'chiusura' : 'apertura');
     }
-  }, [isOpen]);
+  }, [isOpen, isClosed]);
 
   const utils = trpc.useUtils();
   const { marketData } = useMarketDataStore();
@@ -108,19 +110,25 @@ export function GraphicModal({ isOpen, onClose, structureId, structureTag }: Gra
 
       const pnlEuro = totalPnlPoints * structure.multiplier;
 
+      // Usa closingDate se disponibile, altrimenti now
+      const closedAtStr = structure.closingDate 
+        ? new Date(structure.closingDate).toISOString()
+        : now.toISOString();
+      
       // Calcola durata operazione
       const openDate = new Date(createdAtStr);
-      const closeDate = now;
+      const closeDate = new Date(closedAtStr);
       const durationDays = Math.floor((closeDate.getTime() - openDate.getTime()) / (1000 * 60 * 60 * 24));
 
       return {
         tag: structure.tag,
-        date: now.toISOString(),
+        openingDate: createdAtStr,
+        closingDate: closedAtStr,
         daxSpot: marketData.daxSpot,
         legs: structure.legs as OptionLeg[],
         pnlPoints: totalPnlPoints,
         pnlEuro,
-        durationDays,
+        duration: durationDays,
       };
     }
 
@@ -182,36 +190,39 @@ export function GraphicModal({ isOpen, onClose, structureId, structureTag }: Gra
 
         {/* Pulsanti tipo grafica - SFONDO BIANCO, BORDO NERO SPESSO, TESTO NERO */}
         <div className="flex gap-2 mb-4">
-          <button
-            onClick={() => setSelectedType('apertura')}
-            className={`flex-1 px-4 py-3 rounded-lg font-semibold text-base transition-all ${
-              selectedType === 'apertura'
-                ? 'bg-blue-600 text-white border-4 border-blue-700'
-                : 'bg-white text-gray-900 border-4 border-gray-900 hover:bg-gray-100'
-            }`}
-          >
-            Apertura
-          </button>
-          <button
-            onClick={() => setSelectedType('aggiustamento')}
-            className={`flex-1 px-4 py-3 rounded-lg font-semibold text-base transition-all ${
-              selectedType === 'aggiustamento'
-                ? 'bg-blue-600 text-white border-4 border-blue-700'
-                : 'bg-white text-gray-900 border-4 border-gray-900 hover:bg-gray-100'
-            }`}
-          >
-            Aggiustamento
-          </button>
-          <button
-            onClick={() => setSelectedType('chiusura')}
-            className={`flex-1 px-4 py-3 rounded-lg font-semibold text-base transition-all ${
-              selectedType === 'chiusura'
-                ? 'bg-blue-600 text-white border-4 border-blue-700'
-                : 'bg-white text-gray-900 border-4 border-gray-900 hover:bg-gray-100'
-            }`}
-          >
-            Chiusura
-          </button>
+          {!isClosed && (
+            <>
+              <button
+                onClick={() => setSelectedType('apertura')}
+                className={`flex-1 px-4 py-3 rounded-lg font-semibold text-base transition-all ${
+                  selectedType === 'apertura'
+                    ? 'bg-blue-600 text-white border-4 border-blue-700'
+                    : 'bg-white text-gray-900 border-4 border-gray-900 hover:bg-gray-100'
+                }`}
+              >
+                Apertura
+              </button>
+              <button
+                onClick={() => setSelectedType('aggiustamento')}
+                className={`flex-1 px-4 py-3 rounded-lg font-semibold text-base transition-all ${
+                  selectedType === 'aggiustamento'
+                    ? 'bg-blue-600 text-white border-4 border-blue-700'
+                    : 'bg-white text-gray-900 border-4 border-gray-900 hover:bg-gray-100'
+                }`}
+              >
+                Aggiustamento
+              </button>
+            </>
+          )}
+          {isClosed && (
+            <button
+              onClick={() => setSelectedType('chiusura')}
+              className="flex-1 px-4 py-3 rounded-lg font-semibold text-base transition-all bg-blue-600 text-white border-4 border-blue-700"
+              disabled
+            >
+              Chiusura
+            </button>
+          )}
         </div>
 
         {/* Preview template */}

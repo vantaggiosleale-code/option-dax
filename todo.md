@@ -337,3 +337,19 @@
 - [x] Pulsanti tipo con BORDO SPESSO NERO (4px) e TESTO NERO su SFONDO BIANCO
 - [x] Aumentare altezza template da 800px a 1000px per mostrare footer completo
 - [x] Testo modal nero per contrasto su sfondo bianco
+
+## Spostare Grafica Chiusura in Strutture Chiuse
+- [ ] Aggiungere pulsante "Genera Grafica" nella lista strutture chiuse (StructureListView)
+- [ ] Modificare GraphicModal per accettare prop `isClosed` e mostrare solo tipo appropriato
+- [ ] Strutture aperte: mostrare solo "Apertura" e "Aggiustamento"
+- [ ] Strutture chiuse: mostrare solo "Chiusura"
+- [ ] Calcolare correttamente data apertura (createdAt), data chiusura (closedAt), durata giorni
+- [ ] Testare generazione grafica chiusura con struttura realmente chiusa
+
+## Spostare Grafica Chiusura in Strutture Chiuse (COMPLETATO)
+- [x] Aggiungere pulsante Genera Grafica nelle card strutture chiuse
+- [x] Modificare GraphicModal per accettare prop isClosed
+- [x] Mostrare solo "Apertura" e "Aggiustamento" per strutture aperte
+- [x] Mostrare solo "Chiusura" per strutture chiuse
+- [x] Calcolare correttamente openingDate, closingDate, duration per grafica chiusura
+- [ ] Testare generazione grafica chiusura
