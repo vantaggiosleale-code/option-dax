@@ -522,3 +522,15 @@
   * Main tag (riga 137-143): backgroundColor e color basati su theme
 - [x] Light mode verificato funzionante: tutto bianco con testo nero leggibile
 - [ ] Dark mode da testare: cliccare toggle per verificare tutto nero con testo bianco
+
+## BUG CRITICO: Testi Grigi Chiari Illeggibili in StructureListView (RISOLTO)
+- [x] Utente conferma: tutti i testi erano grigio chiaro su bianco → ILLEGGIBILI
+- [x] Causa: classi .text-foreground, .text-muted in theme-colors.css non funzionano (Tailwind priorità più alta)
+- [x] Soluzione implementata:
+  * Aggiunto costanti colori: textPrimary (#374151 light, #f9fafb dark), textSecondary (#6b7280 light, #d1d5db dark)
+  * Sostituito text-foreground con style={{ color: textPrimary }} (sed)
+  * Sostituito text-muted con style={{ color: textSecondary }} (sed)
+  * Sostituito text-gray-600 con style={{ color: textSecondary }} (sed)
+  * Sostituito text-gray-500 con style={{ color: textMuted }} (sed)
+- [x] Light mode verificato: tutti i testi LEGGIBILI (nero scuro/grigio scuro)
+- [ ] Dark mode da testare: cliccare toggle per verificare testi bianchi
