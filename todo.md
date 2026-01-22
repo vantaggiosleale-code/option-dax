@@ -463,3 +463,12 @@
   * HistoricalImportModal.tsx
   * ImageAnalysisModal.tsx
 - [ ] Testare che tutto sia solido in light e dark mode
+
+## BUG CRITICO: Sidebar Trasparente + Toggle Non Funziona (RISOLTO)
+- [x] Sostituito bg-sidebar con bg-white dark:bg-gray-900 in Sidebar.tsx
+- [x] Sostituito bg-background con bg-white dark:bg-gray-950 in App.tsx
+- [x] Sostituito bg-card con bg-white dark:bg-gray-900 in tutti i componenti
+- [x] Sostituito text-foreground, text-muted-foreground, border-border con classi Tailwind dirette
+- [x] ThemeContext applica correttamente classe .dark a document.documentElement
+- [x] Toggle funziona: dark mode attivo (sidebar nera + main content nero)
+- [ ] Testare light mode (cliccare toggle per tornare a bianco)

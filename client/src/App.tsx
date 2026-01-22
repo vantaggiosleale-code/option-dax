@@ -69,7 +69,7 @@ const App: React.FC = () => {
     }
 
     return (
-        <div className="bg-background text-foreground font-sans min-h-screen flex">
+        <div className="bg-white dark:bg-gray-950 text-gray-900 dark:text-white font-sans min-h-screen flex">
             {/* Sidebar */}
             {isAuthenticated && (
                 <Sidebar currentView={currentView} onNavigate={(view) => { handleNavigate(view); setIsSidebarOpen(false); }} isOpen={isSidebarOpen} />
@@ -77,12 +77,12 @@ const App: React.FC = () => {
             
             {/* Main Content */}
             <div className={`flex-1 flex flex-col ${isAuthenticated ? 'md:ml-64' : ''}`}>
-                <header className="bg-card border-b border-border p-3 flex items-center justify-between sticky top-0 z-10">
+                <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 p-3 flex items-center justify-between sticky top-0 z-10">
                     {/* Hamburger Menu (Mobile Only) */}
                     {isAuthenticated && (
                         <button
                             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                            className="md:hidden p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition"
+                            className="md:hidden p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
                             aria-label="Toggle menu"
                         >
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -94,7 +94,7 @@ const App: React.FC = () => {
                         {!loading && (
                             isAuthenticated ? (
                                 <div className="flex items-center space-x-3">
-                                    <span className="text-sm text-foreground font-medium">{user?.name || user?.email}</span>
+                                    <span className="text-sm text-gray-900 dark:text-white font-medium">{user?.name || user?.email}</span>
                                     <button
                                         onClick={handleLogout}
                                         className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition"

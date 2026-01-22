@@ -19,15 +19,15 @@ export function Sidebar({ currentView, onNavigate, isOpen = false }: SidebarProp
   ];
 
   return (
-    <aside className={`fixed left-0 top-0 h-screen w-64 bg-sidebar border-r border-sidebar-border flex flex-col z-60 transition-transform duration-300 shadow-lg ${
+    <aside className={`fixed left-0 top-0 h-screen w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col z-60 transition-transform duration-300 shadow-lg ${
       isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
     }`}>
       {/* Logo */}
-      <div className="p-6 border-b border-sidebar-border">
-        <h1 className="text-xl font-bold text-sidebar-foreground antialiased">
+      <div className="p-6 border-b border-gray-200 dark:border-gray-800">
+        <h1 className="text-xl font-bold text-gray-900 dark:text-white antialiased">
           Option DAX
         </h1>
-        <p className="text-xs text-muted-foreground mt-1">
+        <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
           Professional Trading Software
         </p>
       </div>
@@ -46,8 +46,8 @@ export function Sidebar({ currentView, onNavigate, isOpen = false }: SidebarProp
                 w-full flex items-center gap-3 px-4 py-3 rounded-lg
                 transition-all duration-200
                 ${isActive 
-                  ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium' 
-                  : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+                  ? 'bg-blue-50 dark:bg-gray-800 text-blue-600 dark:text-blue-400 font-medium' 
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                 }
               `}
             >
@@ -59,12 +59,12 @@ export function Sidebar({ currentView, onNavigate, isOpen = false }: SidebarProp
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-sidebar-border space-y-3">
+      <div className="p-4 border-t border-gray-200 dark:border-gray-800 space-y-3">
         {/* Theme Toggle */}
         {toggleTheme && (
           <button
             onClick={toggleTheme}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-sidebar-accent hover:bg-sidebar-accent/70 text-sidebar-accent-foreground transition-all duration-200"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200"
           >
             {theme === 'light' ? (
               <>
@@ -81,7 +81,7 @@ export function Sidebar({ currentView, onNavigate, isOpen = false }: SidebarProp
         )}
         
         {/* Copyright */}
-        <div className="text-xs text-muted-foreground text-center">
+        <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
           <p className="text-[10px] leading-relaxed">
             Software by Opzionetika<br />
             Copyright Vito Tarantini

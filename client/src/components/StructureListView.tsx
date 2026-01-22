@@ -188,22 +188,22 @@ const StructureListView: React.FC<StructureListViewProps> = ({ setCurrentView })
             />
             <div className={`max-w-4xl mx-auto space-y-8 ${isBulkEditMode && selectedIds.size > 0 ? 'pb-24' : ''}`}>
 
-                 <div className="bg-card border border-border rounded-lg p-4">
+                 <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-4">
                     <div className="flex flex-wrap gap-y-3 justify-between items-center mb-4">
                         <div className="flex items-center space-x-3">
                             <PortfolioIcon />
                             <h1 className="text-2xl font-bold text-white">Analisi di Portafoglio</h1>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <div className="text-sm font-medium text-muted-foreground flex items-center">
+                            <div className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center">
                                 <span className="relative flex h-2 w-2 mr-2">
                                     <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                                 </span>
                                 Spot DAX:
                             </div>
-                            <div className="flex items-center bg-muted border border-border rounded-md text-sm">
-                                <button onClick={() => handleSpotStep(-10)} className="px-2 py-1 text-muted-foreground hover:bg-muted rounded-l-md font-mono">-10</button>
-                                <button onClick={() => handleSpotStep(-1)} className="px-2 py-1 text-muted-foreground hover:bg-muted border-l border-r border-border font-mono">-1</button>
+                            <div className="flex items-center bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-800 rounded-md text-sm">
+                                <button onClick={() => handleSpotStep(-10)} className="px-2 py-1 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-800 rounded-l-md font-mono">-10</button>
+                                <button onClick={() => handleSpotStep(-1)} className="px-2 py-1 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-800 border-l border-r border-gray-200 dark:border-gray-800 font-mono">-1</button>
                                 <input
                                     type="number"
                                     value={marketData.daxSpot}
@@ -211,12 +211,12 @@ const StructureListView: React.FC<StructureListViewProps> = ({ setCurrentView })
                                     className="bg-transparent w-24 text-center text-white font-mono focus:outline-none"
                                     step="0.01"
                                 />
-                                <button onClick={() => handleSpotStep(1)} className="px-2 py-1 text-muted-foreground hover:bg-muted border-l border-r border-border font-mono">+1</button>
-                                <button onClick={() => handleSpotStep(10)} className="px-2 py-1 text-muted-foreground hover:bg-muted border-r border-border font-mono">+10</button>
+                                <button onClick={() => handleSpotStep(1)} className="px-2 py-1 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-800 border-l border-r border-gray-200 dark:border-gray-800 font-mono">+1</button>
+                                <button onClick={() => handleSpotStep(10)} className="px-2 py-1 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-800 font-mono">+10</button>
                                 <button 
                                     onClick={() => refetchDaxPrice()} 
                                     disabled={isLoadingSpot}
-                                    className="px-2 py-1 text-accent hover:text-white hover:bg-muted rounded-r-md transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="px-2 py-1 text-accent hover:text-white hover:bg-gray-100 dark:bg-gray-800 rounded-r-md transition disabled:opacity-50 disabled:cursor-not-allowed"
                                     title="Aggiorna Prezzo Live (Yahoo Finance)"
                                 >
                                     <div className={isLoadingSpot ? "animate-spin" : ""}>
@@ -226,7 +226,7 @@ const StructureListView: React.FC<StructureListViewProps> = ({ setCurrentView })
                             </div>
                         </div>
                     </div>
-                    <div className="bg-background border border-border p-4 rounded-lg grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
+                    <div className="bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 p-4 rounded-lg grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
                          <div>
                             <span className="text-sm text-muted-foreground">P/L Aperto Totale</span>
                             <p className={`font-mono text-lg md:text-xl font-bold ${totalPortfolioUnrealizedPnl >= 0 ? 'text-profit' : 'text-loss'}`}>
@@ -252,13 +252,13 @@ const StructureListView: React.FC<StructureListViewProps> = ({ setCurrentView })
                     </div>
                 </div>
 
-                <div className="bg-card border border-border rounded-lg p-4">
+                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-4">
                     <div className="flex flex-wrap gap-y-3 justify-between items-center mb-4">
                         <h1 className="text-2xl font-bold text-white">Strutture Attive</h1>
                         <div className="flex items-center space-x-2">
                              <button 
                                 onClick={() => setIsHistoryModalOpen(true)}
-                                className="flex items-center justify-center bg-muted hover:bg-muted text-white font-semibold p-2 md:py-2 md:px-3 rounded-md transition"
+                                className="flex items-center justify-center bg-gray-100 dark:bg-gray-800 hover:bg-gray-100 dark:bg-gray-800 text-white font-semibold p-2 md:py-2 md:px-3 rounded-md transition"
                                 title="Importa Storico da Immagini"
                             >
                                 <UploadIcon />
@@ -266,7 +266,7 @@ const StructureListView: React.FC<StructureListViewProps> = ({ setCurrentView })
                             </button>
                              <button 
                                 onClick={() => setIsAnalysisModalOpen(true)}
-                                className="flex items-center justify-center bg-muted hover:bg-muted text-white font-semibold p-2 md:py-2 md:px-3 rounded-md transition"
+                                className="flex items-center justify-center bg-gray-100 dark:bg-gray-800 hover:bg-gray-100 dark:bg-gray-800 text-white font-semibold p-2 md:py-2 md:px-3 rounded-md transition"
                                 title="Carica Screenshot di un Trade"
                             >
                                 <ScanIcon />
@@ -291,7 +291,7 @@ const StructureListView: React.FC<StructureListViewProps> = ({ setCurrentView })
                                 return (
                                     <div 
                                         key={structure.id} 
-                                        className="bg-card border border-border p-4 rounded-lg cursor-pointer hover:border-sky-500 transition-all flex flex-col sm:flex-row sm:justify-between sm:items-center"
+                                        className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-4 rounded-lg cursor-pointer hover:border-sky-500 transition-all flex flex-col sm:flex-row sm:justify-between sm:items-center"
                                         onClick={() => setCurrentView('detail', structure.id)}
                                     >
                                         <div className="flex-shrink-0 mb-3 sm:mb-0 w-full sm:w-auto">
@@ -300,31 +300,31 @@ const StructureListView: React.FC<StructureListViewProps> = ({ setCurrentView })
                                         </div>
                                         <div className="w-full sm:w-auto grid grid-cols-3 gap-x-4 gap-y-2 sm:flex sm:gap-2 font-mono text-sm text-left sm:text-right">
                                             <div className="sm:w-32">
-                                                <span className="text-xs text-muted-foreground block">P/L Aperto</span>
+                                                <span className="text-xs text-gray-600 dark:text-gray-400 block">P/L Aperto</span>
                                                 <p className={`font-bold ${unrealizedPnl >= 0 ? 'text-profit' : 'text-loss'}`}>
                                                     €{unrealizedPnl.toFixed(2)}
                                                 </p>
                                             </div>
                                             <div className="sm:w-20">
-                                                <span className="text-xs text-muted-foreground block">PDC</span>
+                                                <span className="text-xs text-gray-600 dark:text-gray-400 block">PDC</span>
                                                 <p className={netPremium > 0 ? 'text-loss' : 'text-profit'}>
                                                     {netPremium.toFixed(2)}
                                                 </p>
                                             </div>
                                             <div className="sm:w-16">
-                                                <span className="text-xs text-muted-foreground block">Δ Delta</span>
+                                                <span className="text-xs text-gray-600 dark:text-gray-400 block">Δ Delta</span>
                                                 <p className="text-white">{totalGreeks.delta.toFixed(2)}</p>
                                             </div>
                                             <div className="sm:w-16">
-                                                <span className="text-xs text-muted-foreground block">Γ Gamma</span>
+                                                <span className="text-xs text-gray-600 dark:text-gray-400 block">Γ Gamma</span>
                                                 <p className="text-white">{totalGreeks.gamma.toFixed(3)}</p>
                                             </div>
                                             <div className="sm:w-24">
-                                                <span className="text-xs text-muted-foreground block">Θ Theta</span>
+                                                <span className="text-xs text-gray-600 dark:text-gray-400 block">Θ Theta</span>
                                                 <p className="text-white">€{(totalGreeks.theta * structure.multiplier).toFixed(2)}</p>
                                             </div>
                                             <div className="sm:w-24">
-                                                <span className="text-xs text-muted-foreground block">ν Vega</span>
+                                                <span className="text-xs text-gray-600 dark:text-gray-400 block">ν Vega</span>
                                                 <p className="text-white">€{(totalGreeks.vega * structure.multiplier).toFixed(2)}</p>
                                             </div>
                                         </div>
@@ -334,13 +334,13 @@ const StructureListView: React.FC<StructureListViewProps> = ({ setCurrentView })
                         ) : (
                             <div className="text-center py-10">
                                 <p className="text-muted-foreground">Nessuna struttura attiva trovata.</p>
-                                <p className="text-muted-foreground text-sm">Clicca su "Crea Nuova Struttura" per iniziare.</p>
+                                <p className="text-gray-600 dark:text-gray-400 text-sm">Clicca su "Crea Nuova Struttura" per iniziare.</p>
                             </div>
                         )}
                     </div>
                 </div>
 
-                <div className="bg-card border border-border rounded-lg p-4">
+                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-4">
                     <div className="flex justify-between items-center mb-4">
                         <div className="flex items-center space-x-3">
                             <ArchiveIcon />
@@ -352,11 +352,11 @@ const StructureListView: React.FC<StructureListViewProps> = ({ setCurrentView })
                                     <input
                                         id="select-all-closed"
                                         type="checkbox"
-                                        className="h-5 w-5 bg-muted border-border text-accent focus:ring-accent rounded cursor-pointer"
+                                        className="h-5 w-5 bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-800 text-accent focus:ring-accent rounded cursor-pointer"
                                         checked={closedStructures.length > 0 && selectedIds.size === closedStructures.length}
                                         onChange={handleSelectAll}
                                     />
-                                    <label htmlFor="select-all-closed" className="text-sm text-muted-foreground cursor-pointer">Seleziona tutti</label>
+                                    <label htmlFor="select-all-closed" className="text-sm text-gray-600 dark:text-gray-400 cursor-pointer">Seleziona tutti</label>
                                 </div>
                             )}
                             {closedStructures.length > 0 && (
@@ -365,7 +365,7 @@ const StructureListView: React.FC<StructureListViewProps> = ({ setCurrentView })
                                         setIsBulkEditMode(!isBulkEditMode);
                                         setSelectedIds(new Set()); // Reset selection on toggle
                                     }}
-                                    className="flex items-center space-x-2 text-sm bg-muted hover:bg-muted text-white font-semibold py-1 px-3 rounded-md transition"
+                                    className="flex items-center space-x-2 text-sm bg-gray-100 dark:bg-gray-800 hover:bg-gray-100 dark:bg-gray-800 text-white font-semibold py-1 px-3 rounded-md transition"
                                 >
                                     {isBulkEditMode ? <span>Annulla</span> : <><EditIcon /><span>Modifica</span></>}
                                 </button>
@@ -379,7 +379,7 @@ const StructureListView: React.FC<StructureListViewProps> = ({ setCurrentView })
                                 return (
                                     <div
                                         key={structure.id}
-                                        className={`rounded-lg flex items-center transition-all cursor-pointer ${isBulkEditMode ? (isSelected ? 'bg-sky-500 border-2 border-sky-500' : 'bg-card border border-border hover:border-sky-500') : 'bg-card border border-border hover:border-sky-500'}`}
+                                        className={`rounded-lg flex items-center transition-all cursor-pointer ${isBulkEditMode ? (isSelected ? 'bg-sky-500 border-2 border-sky-500' : 'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-sky-500') : 'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-sky-500'}`}
                                         onClick={() => {
                                             if (isBulkEditMode) {
                                                 handleSelect(structure.id);
@@ -392,7 +392,7 @@ const StructureListView: React.FC<StructureListViewProps> = ({ setCurrentView })
                                             <div className="px-4 py-4 flex-shrink-0">
                                                 <input
                                                     type="checkbox"
-                                                    className="h-5 w-5 bg-muted border-border text-accent focus:ring-accent rounded cursor-pointer"
+                                                    className="h-5 w-5 bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-800 text-accent focus:ring-accent rounded cursor-pointer"
                                                     checked={isSelected}
                                                     onChange={() => handleSelect(structure.id)}
                                                     onClick={(e) => e.stopPropagation()}
@@ -439,7 +439,7 @@ const StructureListView: React.FC<StructureListViewProps> = ({ setCurrentView })
             </div>
 
             {isBulkEditMode && selectedIds.size > 0 && (
-                <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border p-4 z-40 transition-transform duration-300 ease-in-out">
+                <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 p-4 z-40 transition-transform duration-300 ease-in-out">
                     <div className="max-w-4xl mx-auto flex justify-between items-center">
                         <span className="font-semibold text-white">{selectedIds.size} {selectedIds.size === 1 ? 'struttura selezionata' : 'strutture selezionate'}</span>
                         <button
