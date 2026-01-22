@@ -373,3 +373,8 @@
 - [x] Aggiungere toggle sidebar con overlay per mobile
 - [x] Fixare posizione footer copyright in fondo alla sidebar
 - [ ] Testare layout responsive su vari breakpoint (richiede test utente su dispositivo mobile)
+
+## 🔧 Fix Mobile Overlay Transparency (URGENT)
+- [x] Aumentare opacità overlay da 50% a 80%
+- [x] Fixare z-index overlay (z-50) e sidebar (z-60) per stacking corretto
+- [ ] Testare su mobile che overlay oscuri correttamente il contenuto (richiede test utente)

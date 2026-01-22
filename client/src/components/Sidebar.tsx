@@ -16,7 +16,7 @@ export function Sidebar({ currentView, onNavigate, isOpen = false }: SidebarProp
   ];
 
   return (
-    <aside className={`fixed left-0 top-0 h-screen w-64 bg-sidebar border-r border-sidebar-border flex flex-col z-40 transition-transform duration-300 ${
+    <aside className={`fixed left-0 top-0 h-screen w-64 bg-sidebar border-r border-sidebar-border flex flex-col z-60 transition-transform duration-300 ${
       isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
     }`}>
       {/* Logo */}
