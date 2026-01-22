@@ -479,3 +479,11 @@
 - [x] Aggiunto classList.remove("dark") all'avvio in ThemeContext
 - [x] Riavviato dev server per ricompilare Tailwind CSS
 - [ ] UTENTE DEVE FARE HARD REFRESH (Ctrl+Shift+R o Ctrl+F5) per bypassare cache browser
+
+## BUG CONFERMATO: Light Mode Non Si Attiva (RISOLTO)
+- [x] Utente conferma: pulsante dice "Light Mode" ma sito rimane scuro
+- [x] Trovato conflitto: primo useEffect (rimuovi dark all'avvio) sovrascrive secondo useEffect (gestione tema)
+- [x] Rimosso primo useEffect ridondante (righe 27-29)
+- [x] Ora solo un useEffect gestisce add/remove classe .dark basato su theme state
+- [x] toggleTheme() funziona correttamente: cambia state da light → dark → light
+- [ ] UTENTE DEVE FARE HARD REFRESH per vedere light mode (cache browser)

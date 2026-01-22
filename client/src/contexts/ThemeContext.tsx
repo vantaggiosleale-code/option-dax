@@ -21,12 +21,7 @@ export function ThemeProvider({
   defaultTheme = "light",
   switchable = false,
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(defaultTheme); // Forza sempre defaultTheme all'avvio
-
-  // Rimuovi forzatamente classe dark all'avvio
-  useEffect(() => {
-    document.documentElement.classList.remove("dark");
-  }, []);
+  const [theme, setTheme] = useState<Theme>(defaultTheme);
 
   useEffect(() => {
     const root = document.documentElement;
