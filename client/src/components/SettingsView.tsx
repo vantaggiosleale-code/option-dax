@@ -33,10 +33,6 @@ const SettingsView: React.FC<SettingsViewProps> = ({ setCurrentView }) => {
 
     return (
         <div className="max-w-2xl mx-auto space-y-6">
-            <button onClick={() => setCurrentView('dashboard')} className="text-accent hover:underline mb-4">
-                &larr; Torna alla Lista
-            </button>
-
             <div className="bg-gray-800 rounded-lg p-6">
                 <h1 className="text-2xl font-bold text-white mb-6">Impostazioni Generali</h1>
 

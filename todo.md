@@ -402,3 +402,8 @@
 - [x] Rimosso tracking-tight che causava blur
 - [x] Aggiunto antialiased per rendering nitido
 - [ ] Testare che logo sia nitido e leggibile (richiede test utente)
+
+## 🗑️ Rimuovere Pulsante Ridondante SettingsView
+- [x] Identificare pulsante alla riga 36 di SettingsView.tsx ("Torna alla Lista")
+- [x] Rimuovere pulsante inutile (ridondante con sidebar navigation)
+- [x] Testare che SettingsView funzioni senza pulsante
